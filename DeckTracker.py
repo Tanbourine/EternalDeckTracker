@@ -3,6 +3,11 @@ import csv
 decklist = 'deck.csv'
 data = []
 deck = []
+end_game = False
+
+
+# OPTIONS
+display_deck_after_action = False
 
 
 def importDeck(decklist):
@@ -17,11 +22,12 @@ def importDeck(decklist):
             data.append([index, card])
 
     num_lines = int(data[-1][0])
+
     # Formatting into [quantity, name]
     for i in range(0, num_lines):
         quantity = int(data[i][1][0:2])
-        name_with_setnumber = data[i][1][2:-11]
-        deck.append([quantity, name_with_setnumber.strip()])
+        name = data[i][1][2:-11]
+        deck.append([quantity, name.strip()])
 
 
 def getName(index):
@@ -62,7 +68,14 @@ def addCard(index):
     deck[index][0] = deck[index][0] + 1
 
 
+def drawProb(index):
+    global probability
+    probability = getQuantity(index) / deckSize() * 100
+    return probability
+
+
 def userInteract():
+    # Main user input section
     action = input("What would you like to do? >>> ")
 
     if action == 'dd':  # Display what's left in the deck
@@ -76,8 +89,6 @@ def userInteract():
             print('---')
             print('Removed 1 of ' + getName(index))
             print('You have ' + str(getQuantity(index)) + ' left')
-            print('---')
-            displayDeck()
 
     elif action == 'a':  # Add a card - you messed up!
         index = input("Which card is being added? >>> ")
@@ -87,25 +98,42 @@ def userInteract():
             print('---')
             print('Added 1 of ' + getName(index))
             print('You have ' + str(getQuantity(index)) + ' left')
+
+    elif action == 'i':
+        index = input("Which card would you like more info about? >>> ")
+        if index.isdigit():
+            index = int(index)
             print('---')
-            displayDeck()
+            cardInfo(index)
 
     elif action == 'p':  # Probability page!
-        print('in work, need more metadata')
+        index = input("What do you want to check the probability of? >>> ")
+        if index.isdigit():
+            index = int(index)
+            print('---')
+            print('%.2f%%' % drawProb(index))
 
     elif action == 'r':  # Reset deck!
         importDeck(decklist)
 
+    elif action == 'q':
+        end_game = True
+
     else:  # catch all typos
         print('Not Allowed')
 
-    print('---')
-    print('You have ' + str(deckSize()) + ' cards left')
+    # Each cycle checks
+
+    if display_deck_after_action == True:
+        print('---')
+        displayDeck()
+        print('---')
+        print('You have ' + str(deckSize()) + ' cards left')
 
 
 def main():
     importDeck(decklist)
-    while(True):
+    while(end_game == False):
         userInteract()
 
 
