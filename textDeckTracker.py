@@ -113,7 +113,7 @@ def userInteract():
             index = int(index)
             print('---')
             cardName = getName(index)
-            print("The probability of drawing %s is %.2f%%" %(cardName, drawProb(index)))
+            print("The probability of drawing %s is %.2f%%" % (cardName, drawProb(index)))
 
     elif action == 'ddon':
         display_deck_after_action = True
@@ -125,10 +125,8 @@ def userInteract():
         importDeck(decklist)
         print('The deck has been reset!')
 
-
     else:  # catch all typos
         print('Not Allowed')
-
 
     # Each cycle checks
     if (display_deck_after_action == True) & (action != 'dd'):
