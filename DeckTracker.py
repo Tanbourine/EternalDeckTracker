@@ -1,10 +1,9 @@
 import csv
 
-decklist = 'deck.csv'
+decklist = 'MonoFire.csv'
 data = []
 deck = []
-end_game = False
-
+endgame = False
 
 # OPTIONS
 display_deck_after_action = False
@@ -26,7 +25,8 @@ def importDeck(decklist):
     # Formatting into [quantity, name]
     for i in range(0, num_lines):
         quantity = int(data[i][1][0:2])
-        name = data[i][1][2:-11]
+        find_parathesis = data[i][1].find("(")
+        name = data[i][1][2:find_parathesis]
         deck.append([quantity, name.strip()])
 
 
@@ -76,6 +76,7 @@ def drawProb(index):
 
 def userInteract():
     # Main user input section
+    global display_deck_after_action
     action = input("What would you like to do? >>> ")
 
     if action == 'dd':  # Display what's left in the deck
@@ -111,20 +112,26 @@ def userInteract():
         if index.isdigit():
             index = int(index)
             print('---')
-            print('%.2f%%' % drawProb(index))
+            cardName = getName(index)
+            print("The probability of drawing %s is %.2f%%" %(cardName, drawProb(index)))
+
+    elif action == 'ddon':
+        display_deck_after_action = True
+
+    elif action == 'ddoff':
+        display_deck_after_action = False
 
     elif action == 'r':  # Reset deck!
         importDeck(decklist)
+        print('The deck has been reset!')
 
-    elif action == 'q':
-        end_game = True
 
     else:  # catch all typos
         print('Not Allowed')
 
-    # Each cycle checks
 
-    if display_deck_after_action == True:
+    # Each cycle checks
+    if (display_deck_after_action == True) & (action != 'dd'):
         print('---')
         displayDeck()
         print('---')
@@ -133,7 +140,8 @@ def userInteract():
 
 def main():
     importDeck(decklist)
-    while(end_game == False):
+    print('To display your deck after every action, type "ddon". To stop displaying, type "ddoff".')
+    while (endgame == False):
         userInteract()
 
 
