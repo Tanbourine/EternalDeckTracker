@@ -6,7 +6,13 @@ endgame = False
 # OPTIONS
 display_deck_after_action = False
 
+# class Card():
+#     def __init__(self, name, quantity):
+#         self.name = name
+#         self.quantity = quantity
 
+# cards = []
+# deckObj = Deck()
 def importDeck(decklist):
     deck = []
     with open(decklist, 'r') as csv_file:
@@ -19,9 +25,13 @@ def importDeck(decklist):
 
             find_parathesis = card[0].find("(")
             name = card[0][2:find_parathesis]
+
+            # cards[i] = Card(name, quantity)
+            # deckObj.addCard(cards[i])
             deck.append([quantity, name.strip()])
 
             num_lines = len(deck)
+
 
     return deck, num_lines
 
