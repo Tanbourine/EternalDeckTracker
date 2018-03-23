@@ -8,8 +8,10 @@ import csv
 # TO MAKE EXECUTABLE
 # pyinstaller EternalDeckTracker.py -F --noconsole --icon=clienticon.ico --add-data "deck.csv;." --add-data "clienticon.ico;."
 decklist = 'deck.csv'
-
-LARGE_FONT = ("Verdana", 12)
+# deck = []
+# num_lines = 0
+# deckSize = []
+LARGE_FONT = ("Verdana", 16)
 
 
 class DeckGUI(tk.Tk):
@@ -135,40 +137,62 @@ class StartPage(tk.Frame):
         # button2 = ttk.Button(self, text="Visit to Page Two",
         #                      command=lambda: controller.show_frame(PageTwo))
         # button2.pack()
+        global deck
+        global num_lines
+        global deckSize
+
+        deckSize = 0
+        deck, num_lines = deckTracker.importDeck(decklist)
+        for line in deck:
+            deckSize += line[0]
 
         def initGUI(self, deck, num_lines):
             numCards = []
             addCard = []
             cardName = []
 
+            cardNum = tk.StringVar()
+            cardNum.set("You have " + str(deckSize) + " cards left!")
+
             for i in range(num_lines):
                 numCards.append(tk.StringVar())
                 numCards[i].set(str(deck[i][0]).zfill(2))
 
                 # Create buttons
-                cardName.append(ttk.Button(self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(self, i)))
-                addCard.append(ttk.Button(self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(self, i)))
+                cardName.append(tk.Button(self, text=deck[i][1], width="30", font=LARGE_FONT, command=lambda i=i: subtractCard(self, i)))
+                addCard.append(tk.Button(self, textvariable=numCards[i], width="3", font=LARGE_FONT, command=lambda i=i: addCard(self, i)))
 
                 # Organize and pack lines
                 cardName[i].grid(row=i, column=0, sticky=tk.W)
                 addCard[i].grid(row=i, column=1, sticky=tk.W)
 
+            cardNumLabel = tk.Label(self, textvariable=cardNum, font=LARGE_FONT)
+            cardNumLabel.grid(row=50, column=0, sticky=tk.W)
+
             def addCard(self, index):
+                global deckSize
                 currentQuantity = deck[index][0]
                 newQuantity = currentQuantity + 1
                 deck[index][0] = newQuantity
                 numCards[index].set(str(newQuantity).zfill(2))
+                deckSize += 1
+                updateDeckSize(self, deckSize)
 
             def subtractCard(self, index):
+                global deckSize
                 currentQuantity = deck[index][0]
                 if currentQuantity > 0:
                     newQuantity = currentQuantity - 1
                     deck[index][0] = newQuantity
                     numCards[index].set(str(newQuantity).zfill(2))
+                    deckSize -= 1
+                    updateDeckSize(self, deckSize)
                 else:
                     print("Cards cannot be negative!")
 
-        deck, num_lines = deckTracker.importDeck(decklist)
+            def updateDeckSize(self, deckSize):
+                cardNum.set("You have " + str(deckSize) + " cards left!")
+
         initGUI(self, deck, num_lines)
 
 
@@ -355,6 +379,6 @@ if __name__ == "__main__":
     deckTracker = DeckTracker(decklist)
 
     deckGUI = DeckGUI()
-    deckGUI.geometry("300x700+300+300")
+    deckGUI.geometry("500x1200+300+300")
     deckGUI.resizable(width=True, height=True)
     deckGUI.mainloop()
