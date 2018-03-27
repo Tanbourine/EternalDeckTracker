@@ -187,11 +187,13 @@ class StartPage(tk.Frame):
         def addCard(index):
             global deckSize
             currentQuantity = deck[index][0]
-            newQuantity = currentQuantity + 1
-            deck[index][0] = newQuantity
-            # numCards[index].set(str(newQuantity).zfill(2))
-            deckSize += 1
-            updateGUI(index)
+            numSigils = deck[index][1].count("Sigil")
+            if (currentQuantity < 4) or (numSigils > 0):
+                newQuantity = currentQuantity + 1
+                deck[index][0] = newQuantity
+                # numCards[index].set(str(newQuantity).zfill(2))
+                deckSize += 1
+                updateGUI(index)
 
         def subtractCard(index):
             global deckSize
