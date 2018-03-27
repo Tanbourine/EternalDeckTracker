@@ -13,6 +13,8 @@ display_deck_after_action = False
 
 # cards = []
 # deckObj = Deck()
+
+
 def importDeck(decklist):
     deck = []
     with open(decklist, 'r') as csv_file:
@@ -31,7 +33,6 @@ def importDeck(decklist):
             deck.append([quantity, name.strip()])
 
             num_lines = len(deck)
-
 
     return deck, num_lines
 

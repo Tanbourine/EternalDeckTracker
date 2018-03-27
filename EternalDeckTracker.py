@@ -19,7 +19,7 @@ class DeckGUI(tk.Tk):
 
         # Initialize tk inheritance
         tk.Tk.__init__(self, *args, **kwargs)
-        tk.Tk.iconbitmap(self, default="clienticon.ico")
+        # tk.Tk.iconbitmap(self, default="clienticon.ico")
         tk.Tk.wm_title(self, "Eternal Deck Tracker")
 
         # Create master frame
@@ -28,12 +28,12 @@ class DeckGUI(tk.Tk):
         master.grid_rowconfigure(0, weight=1)
         master.grid_columnconfigure(0, weight=1)
 
-        #--------MENUS---------#
+        # --------MENUS---------#
 
         # Create main menu in master
         main_menu = tk.Menu(master)
 
-        #-------FILE MENU------#
+        # -------FILE MENU------#
 
         # Create file_menu
         file_menu = tk.Menu(main_menu, tearoff=0)
@@ -47,7 +47,7 @@ class DeckGUI(tk.Tk):
         # Add file_menu to main_menu
         main_menu.add_cascade(label="File", menu=file_menu)
 
-        #-------OPTIONS MENU------#
+        # -------OPTIONS MENU------#
 
         # Create options_menu
         options_menu = tk.Menu(main_menu, tearoff=0)
@@ -125,75 +125,98 @@ class DeckGUI(tk.Tk):
 
 
 class StartPage(tk.Frame):
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        # label = ttk.Label(self, text="Start Page", font=LARGE_FONT)
-        # label.pack(pady=10, padx=10)
-
-        # button1 = ttk.Button(self, text="Visit Page One",
-        #                      command=lambda: controller.show_frame(PageOne))
-        # button1.pack()
-
-        # button2 = ttk.Button(self, text="Visit to Page Two",
-        #                      command=lambda: controller.show_frame(PageTwo))
-        # button2.pack()
         global deck
         global num_lines
         global deckSize
+        global cardProbStr
+
+        cardProb = []
+
+        deck, num_lines = deckTracker.importDeck(decklist)
 
         deckSize = 0
-        deck, num_lines = deckTracker.importDeck(decklist)
         for line in deck:
             deckSize += line[0]
 
-        def initGUI(self, deck, num_lines):
-            numCards = []
-            addCard = []
-            cardName = []
+        numCards = []
+        addCardButton = []
+        cardName = []
+        cardProbStr = []
+        cardProbLabel = []
 
-            cardNum = tk.StringVar()
-            cardNum.set("You have " + str(deckSize) + " cards left!")
+        cardNum = tk.StringVar()
+        cardNum.set("You have " + str(deckSize) + " cards left!")
 
-            for i in range(num_lines):
-                numCards.append(tk.StringVar())
-                numCards[i].set(str(deck[i][0]).zfill(2))
+        # Define button functions
 
-                # Create buttons
-                cardName.append(tk.Button(self, text=deck[i][1], width="30", font=LARGE_FONT, command=lambda i=i: subtractCard(self, i)))
-                addCard.append(tk.Button(self, textvariable=numCards[i], width="3", font=LARGE_FONT, command=lambda i=i: addCard(self, i)))
+        # Initialize buttons
+        for i in range(num_lines):
+            numCards.append(tk.StringVar())
+            numCards[i].set(str(deck[i][0]).zfill(2))
 
-                # Organize and pack lines
-                cardName[i].grid(row=i, column=0, sticky=tk.W)
-                addCard[i].grid(row=i, column=1, sticky=tk.W)
+            for j in range(num_lines):
+                cardProbStr.append(tk.StringVar())
+                cardQuantity = deck[j][0]
+                cardProbStr[j].set(str(round(cardQuantity / deckSize * 100, 2)) + "%")
+            # updateProbability()
 
-            cardNumLabel = tk.Label(self, textvariable=cardNum, font=LARGE_FONT)
-            cardNumLabel.grid(row=50, column=0, sticky=tk.W)
+            # Create buttons with font
+            # cardName.append(tk.Button(self, text=deck[i][1], width="30", font=LARGE_FONT, command=lambda i=i: subtractCard(self, i)))
+            # addCard.append(tk.Button(self, textvariable=numCards[i], width="3", font=LARGE_FONT, command=lambda i=i: addCard(self, i)))
 
-            def addCard(self, index):
-                global deckSize
-                currentQuantity = deck[index][0]
-                newQuantity = currentQuantity + 1
+            # Create ttk buttons (themed)
+            cardProbLabel.append(ttk.Label(self, textvariable=cardProbStr[i], width="6"))
+            cardName.append(ttk.Button(self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(i)))
+            addCardButton.append(ttk.Button(self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(i)))
+
+            # Organize and pack lines
+            cardProbLabel[i].grid(row=i, column=0, sticky=tk.W)
+            cardName[i].grid(row=i, column=1, sticky=tk.W)
+            addCardButton[i].grid(row=i, column=2, sticky=tk.W)
+
+        # Single GUI items
+        cardNumLabel = ttk.Label(self, textvariable=cardNum, font=LARGE_FONT)
+        cardNumLabel.grid(row=50, column=1, sticky=tk.W)
+
+        quitButton = ttk.Button(self, text="Quit", command=self.quit, width="20")
+        quitButton.grid(row=51, column=1, sticky=tk.W)
+
+        def addCard(index):
+            global deckSize
+            currentQuantity = deck[index][0]
+            newQuantity = currentQuantity + 1
+            deck[index][0] = newQuantity
+            # numCards[index].set(str(newQuantity).zfill(2))
+            deckSize += 1
+            updateGUI(index)
+
+        def subtractCard(index):
+            global deckSize
+            currentQuantity = deck[index][0]
+            if currentQuantity > 0:
+                newQuantity = currentQuantity - 1
                 deck[index][0] = newQuantity
-                numCards[index].set(str(newQuantity).zfill(2))
-                deckSize += 1
-                updateDeckSize(self, deckSize)
+                # numCards[index].set(str(newQuantity).zfill(2))
+                deckSize -= 1
+                updateGUI(index)
+            else:
+                print("Cards cannot be negative!")
 
-            def subtractCard(self, index):
-                global deckSize
-                currentQuantity = deck[index][0]
-                if currentQuantity > 0:
-                    newQuantity = currentQuantity - 1
-                    deck[index][0] = newQuantity
-                    numCards[index].set(str(newQuantity).zfill(2))
-                    deckSize -= 1
-                    updateDeckSize(self, deckSize)
-                else:
-                    print("Cards cannot be negative!")
+        def updateProbability():
+            global cardProbStr
+            global deckSize
+            for i in range(num_lines):
+                cardQuantity = deck[i][0]
+                cardProbStr[i].set(str(round(cardQuantity / deckSize * 100, 2)) + "%")
 
-            def updateDeckSize(self, deckSize):
-                cardNum.set("You have " + str(deckSize) + " cards left!")
-
-        initGUI(self, deck, num_lines)
+        def updateGUI(index):
+            global deckSize
+            numCards[index].set(str(deck[index][0]).zfill(2))
+            cardNum.set("You have " + str(deckSize) + " cards left!")
+            updateProbability()
 
 
 class PageOne(tk.Frame):
@@ -379,6 +402,6 @@ if __name__ == "__main__":
     deckTracker = DeckTracker(decklist)
 
     deckGUI = DeckGUI()
-    deckGUI.geometry("500x1200+300+300")
+    deckGUI.geometry("450x700+300+300")
     deckGUI.resizable(width=True, height=True)
     deckGUI.mainloop()
