@@ -28,6 +28,15 @@ class DeckGUI(tk.Tk):
         master.grid_rowconfigure(0, weight=1)
         master.grid_columnconfigure(0, weight=1)
 
+        style = ttk.Style()
+        style.theme_use('aqua')
+        # style.configure("TButton",
+        #                 background="#ccc",
+        #                 font="Verdana 12",
+        #                 padding=5)
+
+        print(style.theme_names())
+
         # --------MENUS---------#
 
         # Create main menu in master
@@ -168,7 +177,7 @@ class StartPage(tk.Frame):
             # addCard.append(tk.Button(self, textvariable=numCards[i], width="3", font=LARGE_FONT, command=lambda i=i: addCard(self, i)))
 
             # Create ttk buttons (themed)
-            cardProbLabel.append(ttk.Label(self, textvariable=cardProbStr[i], width="6", background='black'))
+            cardProbLabel.append(tk.Label(self, textvariable=cardProbStr[i], width="6", background='black'))
             cardName.append(ttk.Button(self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(i)))
             addCardButton.append(ttk.Button(self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(i)))
 
