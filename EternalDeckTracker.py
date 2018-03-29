@@ -170,7 +170,7 @@ class StartPage(tk.Frame):
                 cardProbStr[j].set(str(round(cardQuantity / deckSize * 100, 2)) + "%")
 
             # Create ttk buttons (themed)
-            cardProbLabel.append(tk.Label(self, textvariable=cardProbStr[i], width="6", background='black'))
+            cardProbLabel.append(tk.Label(self, textvariable=cardProbStr[i], width="6", background='#626262'))
             cardName.append(ttk.Button(self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(i)))
             addCardButton.append(ttk.Button(self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(i)))
 
@@ -215,41 +215,43 @@ class StartPage(tk.Frame):
             cardProbColor = []
             colorWheel = [[255, 0, 0]]
             colorAssign = {}
-            for i in range(num_lines):
-                cardQuantity = deck[i][0]
-                localProbNum.append(round(cardQuantity / deckSize * 100, 2))
-                cardProbStr[i].set(str(localProbNum[i]) + "%")
+            if deckSize != 0:
+                for i in range(num_lines):
+                    cardQuantity = deck[i][0]
 
-            # distributing colors
-            uniqueProbs = list(set(localProbNum))
-            numColors = len(uniqueProbs)
-            largestProb = max(uniqueProbs)
+                    localProbNum.append(round(cardQuantity / deckSize * 100, 2))
+                    cardProbStr[i].set(str(localProbNum[i]) + "%")
 
-            redColor = 0
-            yellowColor = 0
-            greenColor = 0
-            colorIncrement = int(255 / numColors * 3)
+                # distributing colors
+                uniqueProbs = list(set(localProbNum))
+                numColors = len(uniqueProbs)
+                largestProb = max(uniqueProbs)
 
-            for i in range(1, round(len(uniqueProbs) / 2)):
-                if colorWheel[i - 1][1] + i * colorIncrement < 255:
-                    colorWheel.append([255, i * colorIncrement, 0])
-                else:
-                    colorWheel.append([255, 255, 0])
+                redColor = 0
+                yellowColor = 0
+                greenColor = 0
+                colorIncrement = int(255 / numColors * 3)
 
-            j = 1
-            for i in range(round(len(uniqueProbs) / 2), len(uniqueProbs)):
-                if colorWheel[i - 1][0] - j * colorIncrement > 0:
-                    colorWheel.append([255 - j * colorIncrement, 255, 0])
-                else:
-                    colorWheel.append([0, 255, 0])
-                j += 1
+                for i in range(1, round(len(uniqueProbs) / 2)):
+                    if colorWheel[i - 1][1] + i * colorIncrement < 255:
+                        colorWheel.append([255, i * colorIncrement, 0])
+                    else:
+                        colorWheel.append([255, 255, 0])
 
-            for i in range(len(uniqueProbs)):
-                colorAssign[uniqueProbs[i]] = '#%02x%02x%02x' % tuple(colorWheel[i])
+                j = 1
+                for i in range(round(len(uniqueProbs) / 2), len(uniqueProbs)):
+                    if colorWheel[i - 1][0] - j * colorIncrement > 0:
+                        colorWheel.append([255 - j * colorIncrement, 255, 0])
+                    else:
+                        colorWheel.append([0, 255, 0])
+                    j += 1
 
-            for i in range(num_lines):
-                labelColor = colorAssign[localProbNum[i]]
-                cardProbLabel[i].configure(foreground=labelColor)
+                for i in range(len(uniqueProbs)):
+                    colorAssign[uniqueProbs[i]] = '#%02x%02x%02x' % tuple(colorWheel[i])
+
+                for i in range(num_lines):
+                    labelColor = colorAssign[localProbNum[i]]
+                    cardProbLabel[i].configure(foreground=labelColor)
 
             # print(len(uniqueProbs))
             # print(colorWheel)
