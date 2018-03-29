@@ -35,8 +35,6 @@ class DeckGUI(tk.Tk):
         #                 font="Verdana 12",
         #                 padding=5)
 
-        print(style.theme_names())
-
         # --------MENUS---------#
 
         # Create main menu in master
@@ -170,11 +168,6 @@ class StartPage(tk.Frame):
                 cardProbStr.append(tk.StringVar())
                 cardQuantity = deck[j][0]
                 cardProbStr[j].set(str(round(cardQuantity / deckSize * 100, 2)) + "%")
-            # updateProbability()
-
-            # Create buttons with font
-            # cardName.append(tk.Button(self, text=deck[i][1], width="30", font=LARGE_FONT, command=lambda i=i: subtractCard(self, i)))
-            # addCard.append(tk.Button(self, textvariable=numCards[i], width="3", font=LARGE_FONT, command=lambda i=i: addCard(self, i)))
 
             # Create ttk buttons (themed)
             cardProbLabel.append(tk.Label(self, textvariable=cardProbStr[i], width="6", background='black'))
@@ -213,8 +206,6 @@ class StartPage(tk.Frame):
                 # numCards[index].set(str(newQuantity).zfill(2))
                 deckSize -= 1
                 updateGUI(index)
-            else:
-                print("Cards cannot be negative!")
 
         def updateProbability():
             global cardProbStr
