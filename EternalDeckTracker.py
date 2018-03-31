@@ -11,7 +11,7 @@ decklist = 'deck.csv'
 # deck = []
 # num_lines = 0
 # deckSize = []
-LARGE_FONT = ("Verdana", 16)
+LARGE_FONT = ("Verdana", 18)
 
 
 class DeckGUI(tk.Tk):
@@ -29,11 +29,11 @@ class DeckGUI(tk.Tk):
         master.grid_columnconfigure(0, weight=1)
 
         style = ttk.Style()
-        style.theme_use('aqua')
-        # style.configure("TButton",
-        #                 background="#ccc",
-        #                 font="Verdana 12",
-        #                 padding=5)
+        # style.theme_use('aqua')
+        style.configure("TButton",
+                        background="#ccc",
+                        font="Verdana 11",
+                        padding=3)
 
         # --------MENUS---------#
 
