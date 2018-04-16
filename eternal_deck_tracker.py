@@ -1,3 +1,9 @@
+""" Eternal Deck Tracker GUI
+    Darren Tan
+    Amanda Tan
+    FEB 2018
+    """
+
 import tkinter as tk
 from tkinter import ttk
 import csv
@@ -6,8 +12,9 @@ import csv
 # https://stackoverflow.com/questions/14759444/pyinstaller-not-picking-up-tree-or-data-files
 
 # TO MAKE EXECUTABLE
-# pyinstaller EternalDeckTracker.py -F --noconsole --icon=clienticon.ico --add-data "deck.csv;." --add-data "clienticon.ico;."
-decklist = 'deck.csv'
+# pyinstaller EternalDeckTracker.py -F --noconsole --icon=clienticon.ico
+# --add-data "deck.csv;." --add-data "clienticon.ico;."
+DECKLIST = 'deck.csv'
 # deck = []
 # num_lines = 0
 # deckSize = []
@@ -15,6 +22,8 @@ LARGE_FONT = ("Verdana", 18)
 
 
 class DeckGUI(tk.Tk):
+    """ GUI application"""
+
     def __init__(self, *args, **kwargs):
 
         # Initialize tk inheritance
@@ -60,9 +69,12 @@ class DeckGUI(tk.Tk):
         options_menu = tk.Menu(main_menu, tearoff=0)
 
         # Give options_menu its buttons
-        options_menu.add_command(label="Go Home", command=lambda: self.show_frame(StartPage))
-        options_menu.add_command(label="Option 1", command=lambda: self.show_frame(PageOne))
-        options_menu.add_command(label="Option 2", command=lambda: self.show_frame(PageTwo))
+        options_menu.add_command(
+            label="Go Home", command=lambda: self.show_frame(StartPage))
+        options_menu.add_command(
+            label="Option 1", command=lambda: self.show_frame(PageOne))
+        options_menu.add_command(
+            label="Option 2", command=lambda: self.show_frame(PageTwo))
         options_menu.add_separator()
         options_menu.add_command(label="Quit", command=self.quit_app)
 
@@ -72,43 +84,43 @@ class DeckGUI(tk.Tk):
         # ------- Font Menu ---------#
 
         # Create variables for font_menu to manipulate
-        text_font = tk.StringVar()
-        text_font.set("Times")
+        # text_font = tk.StringVar()
+        # text_font.set("Times")
 
-        # function to display font when clicked
-        def change_font(event=None):
-            print("Font Picked :", text_font.get())
+        # # function to display font when clicked
+        # def change_font(event=None):
+        # print("Font Picked :", text_font.get())
 
-        # Create font_menu
-        font_menu = tk.Menu(main_menu, tearoff=0)
+        # # Create font_menu
+        # font_menu = tk.Menu(main_menu, tearoff=0)
 
-        # Add checkbox buttons to font_menu
-        font_menu.add_radiobutton(label="Times",
-                                  variable=text_font,
-                                  command=change_font)
+        # # Add checkbox buttons to font_menu
+        # font_menu.add_radiobutton(label="Times",
+        # variable=text_font,
+        # command=change_font)
 
-        font_menu.add_radiobutton(label="Courier",
-                                  variable=text_font,
-                                  command=change_font)
+        # font_menu.add_radiobutton(label="Courier",
+        # variable=text_font,
+        # command=change_font)
 
-        font_menu.add_radiobutton(label="Comic Sans",
-                                  variable=text_font,
-                                  command=change_font)
+        # font_menu.add_radiobutton(label="Comic Sans",
+        # variable=text_font,
+        # command=change_font)
 
-        # ------- View Menu ---------#
+        # # ------- View Menu ---------#
 
-        line_numbers = tk.IntVar()
-        line_numbers.set(1)
+        # line_numbers = tk.IntVar()
+        # line_numbers.set(1)
 
-        # Create view_menu
-        view_menu = tk.Menu(main_menu, tearoff=0)
+        # # Create view_menu
+        # view_menu = tk.Menu(main_menu, tearoff=0)
 
-        view_menu.add_checkbutton(label="Line Numbers",
-                                  variable=line_numbers)
+        # view_menu.add_checkbutton(label="Line Numbers",
+        # variable=line_numbers)
 
-        view_menu.add_cascade(label="Fonts", menu=font_menu)
+        # view_menu.add_cascade(label="Fonts", menu=font_menu)
 
-        main_menu.add_cascade(label="View", menu=view_menu)
+        # main_menu.add_cascade(label="View", menu=view_menu)
 
         # Initialize Menus
         self.config(menu=main_menu)
@@ -124,14 +136,17 @@ class DeckGUI(tk.Tk):
         self.show_frame(StartPage)
 
     def show_frame(self, cont):
+        ''' show the selected frame '''
         frame = self.frames[cont]
         frame.tkraise()
 
     def quit_app(self):
+        ''' close GUI'''
         self.quit()
 
 
 class StartPage(tk.Frame):
+    ''' home page of the GUI, shows decklist'''
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -167,12 +182,16 @@ class StartPage(tk.Frame):
             for j in range(num_lines):
                 cardProbStr.append(tk.StringVar())
                 cardQuantity = deck[j][0]
-                cardProbStr[j].set(str(round(cardQuantity / deckSize * 100, 2)) + "%")
+                cardProbStr[j].set(
+                    str(round(cardQuantity / deckSize * 100, 2)) + "%")
 
             # Create ttk buttons (themed)
-            cardProbLabel.append(tk.Label(self, textvariable=cardProbStr[i], width="6", background='#626262'))
-            cardName.append(ttk.Button(self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(i)))
-            addCardButton.append(ttk.Button(self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(i)))
+            cardProbLabel.append(
+                tk.Label(self, textvariable=cardProbStr[i], width="6", background='#626262'))
+            cardName.append(ttk.Button(
+                self, text=deck[i][1], width="30", command=lambda i=i: subtractCard(i)))
+            addCardButton.append(ttk.Button(
+                self, textvariable=numCards[i], width="3", command=lambda i=i: addCard(i)))
 
             # Organize and pack lines
             cardProbLabel[i].grid(row=i, column=0, sticky=tk.W)
@@ -183,7 +202,8 @@ class StartPage(tk.Frame):
         cardNumLabel = ttk.Label(self, textvariable=cardNum, font=LARGE_FONT)
         cardNumLabel.grid(row=50, column=1, sticky=tk.W)
 
-        quitButton = ttk.Button(self, text="Quit", command=self.quit, width="20")
+        quitButton = ttk.Button(
+            self, text="Quit", command=self.quit, width="20")
         quitButton.grid(row=51, column=1, sticky=tk.W)
 
         def addCard(index):
@@ -247,7 +267,8 @@ class StartPage(tk.Frame):
                     j += 1
 
                 for i in range(len(uniqueProbs)):
-                    colorAssign[uniqueProbs[i]] = '#%02x%02x%02x' % tuple(colorWheel[i])
+                    colorAssign[uniqueProbs[i]] = '#%02x%02x%02x' % tuple(
+                        colorWheel[i])
 
                 for i in range(num_lines):
                     labelColor = colorAssign[localProbNum[i]]
@@ -359,7 +380,8 @@ class DeckTracker():
 
     def displayDeck(self, deck, num_lines):
         for i in range(0, num_lines):
-            print(str(i).zfill(2) + ' - ' + str(deck[i][0]) + ' - ' + deck[i][1])
+            print(str(i).zfill(2) + ' - ' +
+                  str(deck[i][0]) + ' - ' + deck[i][1])
 
     def subtractCard(self, deck, index, numCards):
         deck[index][0] = deck[index][0] - 1
@@ -419,7 +441,8 @@ class DeckTracker():
                 index = int(index)
                 print('---')
                 cardName = self.getName(index)
-                print("The probability of drawing %s is %.2f%%" % (cardName, self.drawProb(index)))
+                print("The probability of drawing %s is %.2f%%" %
+                      (cardName, self.drawProb(index)))
 
         elif action == 'ddon':
             display_deck_after_action = True
