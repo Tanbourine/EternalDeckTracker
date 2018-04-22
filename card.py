@@ -76,13 +76,18 @@ def get_card_keys(deck, card_database):
             if card in db_card["Name"]:
                 deck_keys.append(index)
 
-    print(deck_keys)
     return deck_keys
+
 
 def card_index_to_name(deck_keys, card_database):
     """ takes deck_keys and translates back to names to print """
 
-    pass
+    decklist_to_print = []
+    for card in deck_keys:
+        decklist_to_print.append(card_database[card]["Name"])
+
+    return decklist_to_print
+
 # def get_cost(card, card_key, card_database):
     # """ takes car
 
@@ -97,6 +102,9 @@ def main():
     # print(card_database[0]["Name"])
     # card_keys = match_card_keys(deck, card_database)
     deck_keys = get_card_keys(deck, card_database)
+    decklist_to_print = card_index_to_name(deck_keys, card_database)
+    print(decklist_to_print)
 
 
-main()
+if __name__ == "__main__":
+    main()
