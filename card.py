@@ -42,17 +42,40 @@ def import_deck(decklist):
 
 def print_all_json(jsonfile, keyword):
     """  whole json given a specific keyword """
+    # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
+    # Health, Rarity, Type, ImageUrl
     for card in enumerate(jsonfile):
         print(card[1][keyword])         # [index, json[keyword]]
 
 
+def match_card_metadata(deck, card_database):
+    """ matches card names pulled from csv with metadata from json library
+    takes card names from deck and searches for it in card_database["Name"]
+    Need to use a find() function to get json index of matched name to reference
+    all metadata
+    Also need to figure out how to fix 'int object is not scritable' """
+
+    for card in deck:
+        for index in card_database:
+            if card[0][1] == index["Name"]:
+                print(index["Name"])
+
+    # for i, j in enumerate(deck):
+        ## [[0, decklist], [1, num_lines]]
+        # print(j[0][1])
+
+        # print(i)
+        # print(j)
+
+
 def main():
     """ main function """
-    # decklist = 'deck.csv'
-    card_library = 'eternal-cards-1.31.json'
-    # deck = import_deck(decklist)
-    parsed_json = import_json(card_library)
-    print_all_json(parsed_json, 'Name')
+    decklist = 'deck.csv'
+    card_database_json_file = 'eternal-cards-1.31.json'
+    deck = import_deck(decklist)
+    card_database = import_json(card_database_json_file)
+    #print_all_json(parsed_json, "Name")
+    match_card_metadata(deck, card_database)
 
 
 main()
