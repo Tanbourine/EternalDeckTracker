@@ -31,13 +31,9 @@ def import_deck(decklist):
             find_parathesis = card[0].find("(")
             name = card[0][2:find_parathesis]
 
-            # cards[i] = Card(name, quantity)
-            # deckObj.addCard(cards[i])
             deck.append([quantity, name.strip()])
 
-            num_lines = len(deck)
-
-    return deck, num_lines
+    return deck
 
 
 def print_all_json(jsonfile, keyword):
@@ -48,24 +44,47 @@ def print_all_json(jsonfile, keyword):
         print(card[1][keyword])         # [index, json[keyword]]
 
 
-def match_card_metadata(deck, card_database):
-    """ matches card names pulled from csv with metadata from json library
-    takes card names from deck and searches for it in card_database["Name"]
-    Need to use a find() function to get json index of matched name to reference
-    all metadata
-    Also need to figure out how to fix 'int object is not scritable' """
+def match_card_keys(deck, card_database):
+    """ takes decklist csv and returns dict of {cardname:index} """
 
+    card_names = []
+    card_key = {}
     for card in deck:
-        for index in card_database:
-            if card[0][1] == index["Name"]:
-                print(index["Name"])
+        card_names.append(card[1])
 
-    # for i, j in enumerate(deck):
-        ## [[0, decklist], [1, num_lines]]
-        # print(j[0][1])
+    for card in card_names:
+        for index, db_card in enumerate(card_database):
+            if card in db_card["Name"]:
+                card_key[card_database[index]["Name"]] = index
 
-        # print(i)
-        # print(j)
+    print(card_key)
+    return card_key
+
+
+def get_card_keys(deck, card_database):
+    """ takes decklist csv and returns list of corresponding keys """
+
+    card_names = []
+    deck_keys = []
+
+    # strip card quantity
+    for card in deck:
+        card_names.append(card[1])
+
+    for card in card_names:
+        for index, db_card in enumerate(card_database):
+            if card in db_card["Name"]:
+                deck_keys.append(index)
+
+    print(deck_keys)
+    return deck_keys
+
+def card_index_to_name(deck_keys, card_database):
+    """ takes deck_keys and translates back to names to print """
+
+    pass
+# def get_cost(card, card_key, card_database):
+    # """ takes car
 
 
 def main():
@@ -74,8 +93,10 @@ def main():
     card_database_json_file = 'eternal-cards-1.31.json'
     deck = import_deck(decklist)
     card_database = import_json(card_database_json_file)
-    #print_all_json(parsed_json, "Name")
-    match_card_metadata(deck, card_database)
+    # print_all_json(card_database, "Name")
+    # print(card_database[0]["Name"])
+    # card_keys = match_card_keys(deck, card_database)
+    deck_keys = get_card_keys(deck, card_database)
 
 
 main()
