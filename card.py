@@ -5,11 +5,66 @@ import json
 
 DECKLIST = 'deck.csv'
 CARD_DB = 'eternal-cards-1.31.json'
-# class Card():
-# """ card object that links properties with names """
 
-# def __init__(self, card_name):
-# self.card_name = card_name
+
+class Card():
+
+    """ card object that links properties with names """
+    # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
+    # Health, Rarity, Type, ImageUrl
+
+    def __init__(self, card_key, card_db):
+        self.card_key = card_key
+        self.card_db = card_db
+        self.card_info = card_db[card_key]
+
+        # output_value = []
+        # for card in deck_keys:
+            # output_value.append(card_database[card][value])
+
+    def setnumber(self):
+        """ returns card setnumber """
+        return self.card_info["SetNumber"]
+
+    def eternalid(self):
+        """ returns card eternalid """
+        return self.card_info["EternalID"]
+
+    def name(self):
+        """ returns card name """
+        return self.card_info["Name"]
+
+    def cardtext(self):
+        """ returns card text """
+        return self.card_info["CardText"]
+
+    def cost(self):
+        """ returns card cost """
+        return self.card_info["Cost"]
+
+    def influence(self):
+        """ returns card influence """
+        return self.card_info["Influence"]
+
+    def attack(self):
+        """ returns card attack """
+        return self.card_info["Attack"]
+
+    def health(self):
+        """ returns card health """
+        return self.card_info["Health"]
+
+    def rarity(self):
+        """ returns card rarity """
+        return self.card_info["Rarity"]
+
+    def type(self):
+        """ returns card type """
+        return self.card_info["Type"]
+
+    def imageurl(self):
+        """ returns card imageurl """
+        return self.card_info["ImageUrl"]
 
 
 def import_json(json_file):
@@ -19,29 +74,10 @@ def import_json(json_file):
     return parsed_json
 
 
-# def import_deck(decklist):
-    # """ import csv file to array """
-    # card_names = []
-    # deck = {}
-    # with open(decklist, 'r') as csv_file:
-    # csv_reader = csv.reader(csv_file)
-
-    # Importting and formatting into [quantity, name]
-    # for card in csv_reader:
-
-    # quantity = int(card[0][0:2])
-
-    # find_parathesis = card[0].find("(")
-    # name = card[0][2:find_parathesis]
-
-    # deck.append([quantity, name.strip()])
-    # print(deck)
-
-    # return deck
-
-
 def import_deck(decklist):
-    """ import csv file to array """
+    """ import csv file to array
+        deck = {card_name : quantity}
+        card_name = [card_names] """
     card_names = []
     deck = {}
     with open(decklist, 'r') as csv_file:
@@ -111,7 +147,7 @@ def card_index_to_name(deck_keys, card_database):
     return decklist_to_print
 
 
-def get_value(deck_keys, value,  card_database):
+def get_value(deck_keys, value, card_database):
     """ takes deck keys and returns cost and names """
 
     output_value = []
@@ -129,12 +165,15 @@ def main():
     # Health, Rarity, Type, ImageUrl
     deck, card_names = import_deck(DECKLIST)
     card_database = import_json(CARD_DB)
+
     # print_all_json(card_database, "Name")
     # print(card_database[0]["Name"])
     # card_keys = match_card_keys(card_names, card_database)
     deck_keys = get_card_keys(card_names, card_database)
     # decklist_to_print = card_index_to_name(deck_keys, card_database)
-    output_value = get_value(deck_keys, "Name", card_database)
+    # output_value = get_value(deck_keys, "Name", card_database)
+    card1 = Card(deck_keys[0], card_database)
+    print(card1.name())
 
 
 if __name__ == "__main__":
