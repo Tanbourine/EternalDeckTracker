@@ -146,7 +146,7 @@ class DeckGUI(tk.Tk):
 
 
 class StartPage(tk.Frame):
-    ''' home page of the GUI, shows decklist'''
+    ''' home page of the GUI, shows DECKLIST'''
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -157,7 +157,7 @@ class StartPage(tk.Frame):
 
         cardProb = []
 
-        deck, num_lines = deckTracker.importDeck(decklist)
+        deck, num_lines = deckTracker.importDeck(DECKLIST)
 
         deckSize = 0
         for line in deck:
@@ -320,9 +320,9 @@ class PageTwo(tk.Frame):
 
 
 class DeckTracker():
-    def __init__(self, decklist):
+    def __init__(self, DECKLIST):
 
-        self.decklist = decklist
+        self.DECKLIST = DECKLIST
 
     endgame = False
 
@@ -336,9 +336,9 @@ class DeckTracker():
 
     # cards = []
     # deckObj = Deck()
-    def importDeck(self, decklist):
+    def importDeck(self, DECKLIST):
         deck = []
-        with open(decklist, 'r') as csv_file:
+        with open(DECKLIST, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
 
             # Importting and formatting into [quantity, name]
@@ -451,7 +451,7 @@ class DeckTracker():
             display_deck_after_action = False
 
         elif action == 'r':  # Reset deck!
-            self.importDeck(decklist)
+            self.importDeck(DECKLIST)
             print('The deck has been reset!')
 
         else:  # catch all typos
@@ -469,7 +469,7 @@ if __name__ == "__main__":
     global deck
     global num_lines
 
-    deckTracker = DeckTracker(decklist)
+    deckTracker = DeckTracker(DECKLIST)
 
     deckGUI = DeckGUI()
     deckGUI.geometry("450x700+300+300")
