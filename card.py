@@ -26,7 +26,7 @@ def import_json(json_file):
     # with open(decklist, 'r') as csv_file:
     # csv_reader = csv.reader(csv_file)
 
-    # # Importting and formatting into [quantity, name]
+    # Importting and formatting into [quantity, name]
     # for card in csv_reader:
 
     # quantity = int(card[0][0:2])
@@ -110,21 +110,31 @@ def card_index_to_name(deck_keys, card_database):
 
     return decklist_to_print
 
-# def get_cost(card, card_key, card_database):
-    # """ takes car
+
+def get_value(deck_keys, value,  card_database):
+    """ takes deck keys and returns cost and names """
+
+    output_value = []
+    for card in deck_keys:
+        output_value.append(card_database[card][value])
+
+    print(output_value)
+
+    return output_value
 
 
 def main():
     """ main function """
+    # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
+    # Health, Rarity, Type, ImageUrl
     deck, card_names = import_deck(DECKLIST)
     card_database = import_json(CARD_DB)
     # print_all_json(card_database, "Name")
     # print(card_database[0]["Name"])
     # card_keys = match_card_keys(card_names, card_database)
     deck_keys = get_card_keys(card_names, card_database)
-    decklist_to_print = card_index_to_name(deck_keys, card_database)
-    print(deck_keys)
-    print(decklist_to_print)
+    # decklist_to_print = card_index_to_name(deck_keys, card_database)
+    output_value = get_value(deck_keys, "Name", card_database)
 
 
 if __name__ == "__main__":
