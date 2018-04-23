@@ -107,28 +107,6 @@ def import_deck(decklist):
     return deck, card_names
 
 
-def print_all_json(jsonfile, keyword):
-    """  whole json given a specific keyword """
-    # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
-    # Health, Rarity, Type, ImageUrl
-    for card in enumerate(jsonfile):
-        print(card[1][keyword])         # [index, json[keyword]]
-
-
-def match_card_keys(card_names, card_database):
-    """ takes decklist csv and returns dict of {cardname:index} """
-
-    card_key = {}
-
-    for card in card_names:
-        for index, db_card in enumerate(card_database):
-            if card in db_card["Name"]:
-                card_key[card_database[index]["Name"]] = index
-
-    print(card_key)
-    return card_key
-
-
 def create_keyed_decklist(deck, card_names, card_database):
     """ takes decklist csv and returns list of corresponding keys and quantities
     in dict """
@@ -150,26 +128,13 @@ def create_keyed_decklist(deck, card_names, card_database):
     return keyed_decklist
 
 
-def card_index_to_name(deck_keys, card_database):
-    """ takes deck_keys and translates back to names to print """
+def create_card_obj_deck(keyed_decklist, card_database):
+    """ takes keyed decklist and returns a list of Card objects """
+    deck_obj = []
+    for card in keyed_decklist:
+        deck_obj.append(Card(card, card_database))
 
-    decklist_to_print = []
-    for card in deck_keys:
-        decklist_to_print.append(card_database[card]["Name"])
-
-    return decklist_to_print
-
-
-def get_value(deck_keys, value, card_database):
-    """ takes deck keys and returns cost and names """
-
-    output_value = []
-    for card in deck_keys:
-        output_value.append(card_database[card][value])
-
-    print(output_value)
-
-    return output_value
+    return deck_obj
 
 
 def main():
@@ -178,12 +143,14 @@ def main():
     # Health, Rarity, Type, ImageUrl
     deck, card_names = import_deck(DECKLIST)
     card_database = import_json(CARD_DB)
-
     keyed_decklist = create_keyed_decklist(deck, card_names, card_database)
-    # decklist_to_print = card_index_to_name(deck_keys, card_database)
-    # output_value = get_value(deck_keys, "Name", card_database)
-    card1 = Card(keyed_decklist[0], card_database)
-    print(card1.quantity())
+    deck_obj = create_card_obj_deck(keyed_decklist, card_database)
+    for i in range(len(keyed_decklist)):
+        print(deck_obj[i].name())
+        print(deck_obj[i].cost())
+        print(deck_obj[i].influence())
+        print('-----------')
+        print('')
 
 
 if __name__ == "__main__":
