@@ -10,16 +10,20 @@ CARD_DB = 'eternal-cards-1.31.json'
 class Deck():
     """ self sorting list of cards """
 
-    def __init__(self, keyed_decklist, card_database):
-        self.decklist = cd.create_card_obj_deck(keyed_decklist, card_database)
+    def __init__(self, keyed_decklist, card_db):
+        self.decklist = cd.create_card_obj_deck(keyed_decklist, card_db)
+        print(keyed_decklist)
+        print(card_db[208])
 
     def alpha_sort(self):
         """ sorts alphabetical """
+        holding_arr = []
         alpha_arr = []
         for card in self.decklist:
             alpha_arr.append(card.name())
 
         alpha_arr.sort()
+
         return alpha_arr
 
     def type_alpha_cost(self):
@@ -48,12 +52,12 @@ class Deck():
         power_arr.sort()
         units_arr.sort()
 
-        print(spells_arr)
-        print('------------')
-        print(power_arr)
-        print('------------')
-        print(units_arr)
-        print('------------')
+        # print(spells_arr)
+        # print('------------')
+        # print(power_arr)
+        # print('------------')
+        # print(units_arr)
+        # print('------------')
 
     def type_cost_alpha(self):
         """ sorts by type then color then alpha """
@@ -77,12 +81,8 @@ class Deck():
             else:
                 units_arr.append(card)
 
-        # print(spells_arr)
-        # print('------------')
-        # print(power_arr)
-        # print('------------')
-        # print(units_arr)
-        # print('------------')
+    def export_arr(self):
+        """ format array to export to GUI """
 
 
 def main():
