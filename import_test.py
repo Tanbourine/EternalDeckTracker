@@ -16,6 +16,8 @@ def main():
     deck = dk.Deck(keyed_decklist, card_db)
     type_alpha_deck = deck.type_alpha_cost()
 
+    # returns list -> [name, type, cost, key, quantity]
+
     print('Sorted by TYPE, then by ALPHA')
     print('====================')
     print('')
@@ -39,6 +41,9 @@ def main():
     print('')
     print('====================')
     print('====================')
+
+    for i in range(5):
+        print(type_alpha_deck[0][0][i])
 
 
 if __name__ == "__main__":
