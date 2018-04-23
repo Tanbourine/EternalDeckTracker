@@ -8,12 +8,13 @@ CARD_DB = 'eternal-cards-1.31.json'
 
 
 class Deck():
+
     """ self sorting list of cards """
 
     def __init__(self, keyed_decklist, card_db):
         self.decklist = cd.create_card_obj_deck(keyed_decklist, card_db)
-        print(keyed_decklist)
-        print(card_db[208])
+        # print(keyed_decklist)
+        # print(card_db[208])
 
     def alpha_sort(self):
         """ sorts alphabetical """
@@ -38,8 +39,9 @@ class Deck():
 
         # organize by type
         for card in holding_arr:
-            if card[1].lower() in ["spell", "fast spell", "curse", "cursed relic",
-                                   "relic"]:
+            if card[1].lower(
+            ) in ["spell", "fast spell", "curse", "cursed relic",
+                  "relic"]:
                 spells_arr.append(card)
 
             elif card[1].lower() in ["power"]:
@@ -71,8 +73,9 @@ class Deck():
 
         # organize by type
         for card in holding_arr:
-            if card[1].lower() in ["spell", "fast spell", "curse", "cursed relic",
-                                   "relic"]:
+            if card[1].lower(
+            ) in ["spell", "fast spell", "curse", "cursed relic",
+                  "relic"]:
                 spells_arr.append(card)
 
             elif card[1].lower() in ["power"]:
