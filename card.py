@@ -128,13 +128,13 @@ def create_keyed_decklist(deck, card_names, card_db):
     return keyed_decklist
 
 
-def create_card_obj_deck(keyed_decklist, card_db):
-    """ takes keyed decklist and returns a list of Card objects """
-    deck_obj = []
-    for card in keyed_decklist:
-        deck_obj.append(Card(card, card_db))
+# def create_card_obj_deck(keyed_decklist, card_db):
+    # """ takes keyed decklist and returns a list of Card objects """
+    # deck_obj = []
+    # for card in keyed_decklist:
+        # deck_obj.append(Card(card, card_db))
 
-    return deck_obj
+    # return deck_obj
 
 
 def main():
@@ -144,13 +144,13 @@ def main():
     deck, card_names = import_deck(DECKLIST)
     card_db = import_json(CARD_DB)
     keyed_decklist = create_keyed_decklist(deck, card_names, card_db)
-    deck_obj = create_card_obj_deck(keyed_decklist, card_db)
-    for i in range(len(keyed_decklist)):
-        print(deck_obj[i].name())
-        print(deck_obj[i].cost())
-        print(deck_obj[i].influence())
-        print('-----------')
-        print('')
+    # deck_obj = create_card_obj_deck(keyed_decklist, card_db)
+    # for i in range(len(keyed_decklist)):
+        # print(deck_obj[i].name())
+        # print(deck_obj[i].cost())
+        # print(deck_obj[i].influence())
+        # print('-----------')
+        # print('')
 
 
 if __name__ == "__main__":
