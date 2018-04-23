@@ -16,11 +16,16 @@ class Card():
     def __init__(self, card_key, card_db):
         self.card_key = card_key
         self.card_db = card_db
-        self.card_info = card_db[card_key]
+        self.card_info = card_db[card_key[0]]
+        self.card_quantity = card_key[1]
 
         # output_value = []
         # for card in deck_keys:
             # output_value.append(card_database[card][value])
+
+    def quantity(self):
+        """ returns quantity of card """
+        return self.card_quantity
 
     def setnumber(self):
         """ returns card setnumber """
@@ -177,10 +182,9 @@ def main():
     keyed_decklist = create_keyed_decklist(deck, card_names, card_database)
     # decklist_to_print = card_index_to_name(deck_keys, card_database)
     # output_value = get_value(deck_keys, "Name", card_database)
-    card1 = Card(keyed_decklist[0][0], card_database)
-    print(card1.cost())
+    card1 = Card(keyed_decklist[0], card_database)
+    print(card1.quantity())
 
 
 if __name__ == "__main__":
     main()
-    # IMPORTED_DECK, CARD_NAMES = import_deck(DECKLIST)
