@@ -1,5 +1,6 @@
 """ deck object to self sort ALPHA, TYPE_alpha_cost, TYPE_cost_alpha, COST_alpha
-    caps is major category, lower is tiebreakers"""
+    caps is major category, lower is tiebreakers
+    returns list -> [name, type, cost, key, quantity]"""
 
 import card as cd
 
@@ -12,33 +13,58 @@ class Deck():
     """ self sorting list of cards """
 
     def __init__(self, keyed_decklist, card_db):
+        self.keyed_decklist = keyed_decklist
+        self.card_db = card_db
         self.decklist = cd.create_card_obj_deck(keyed_decklist, card_db)
-        # print(keyed_decklist)
-        # print(card_db[208])
 
-    def alpha_sort(self):
+        self.holding_arr = []
+
+        for index, card in enumerate(self.decklist):
+            self.holding_arr.append(
+                [card.name(), card.type(), card.cost(),
+                 self.keyed_decklist[index][0], self.keyed_decklist[index][1]])
+
+    def cost_alpha(self):  # pylint: disable=no-self-use
+        """ comes as is from eternal """
+        # for index, card in enumerate(self.decklist):
+            # cost_alpha_arr.append(
+                # [card.name(), card.type(), card.cost(),
+                 # self.keyed_decklist[index][0],
+                 # self.keyed_decklist[index][1]])
+
+        return self.holding_arr
+
+    def alpha(self):
         """ sorts alphabetical """
-        holding_arr = []
-        alpha_arr = []
-        for card in self.decklist:
-            alpha_arr.append(card.name())
+        # alpha_arr = []
+        # for index, card in enumerate(self.decklist):
+            # alpha_arr.append(
+                # [card.name(), card.type(), card.cost(),
+                 # self.keyed_decklist[index][0],
+                 # self.keyed_decklist[index][1]])
 
-        alpha_arr.sort()
+        alpha_arr = sorted(self.holding_arr)
 
         return alpha_arr
 
     def type_alpha_cost(self):
-        """ sorts by type then alpha then cost """
-        holding_arr = []
+        """ sorts by type then alpha then cost
+            returns [units, spells, power] """
         spells_arr = []
         power_arr = []
         units_arr = []
 
-        for card in self.decklist:
-            holding_arr.append([card.name(), card.type(), card.cost()])
+        # for index, card in enumerate(self.decklist):
+            # alpha_arr.append(
+                # [card.name(), card.type(), card.cost(),
+                 # self.keyed_decklist[index][0],
+                 # self.keyed_decklist[index][1]])
+
+            # holding_arr.append(
+                # [card.name(), card.type(), card.cost(), self.keyed_decklist[index]])
 
         # organize by type
-        for card in holding_arr:
+        for card in self.holding_arr:
             if card[1].lower(
             ) in ["spell", "fast spell", "curse", "cursed relic",
                   "relic"]:
@@ -54,25 +80,28 @@ class Deck():
         power_arr.sort()
         units_arr.sort()
 
-        # print(spells_arr)
-        # print('------------')
-        # print(power_arr)
-        # print('------------')
-        # print(units_arr)
-        # print('------------')
+        type_alpha_cost_arr = [units_arr, spells_arr, power_arr]
+        return type_alpha_cost_arr
 
     def type_cost_alpha(self):
-        """ sorts by type then color then alpha """
-        holding_arr = []
+        """ sorts by type then color then alpha
+            returns [units, spells, power] """
         spells_arr = []
         power_arr = []
         units_arr = []
 
-        for card in self.decklist:
-            holding_arr.append([card.name(), card.type(), card.cost()])
+        # holding_arr = []
+        # for index, card in enumerate(self.decklist):
+            # holding_arr.append(
+                # [card.name(), card.type(), card.cost(),
+                 # self.keyed_decklist[index][0],
+                 # self.keyed_decklist[index][1]])
+
+            # holding_arr.append([card.name(), card.type(), card.cost(),
+                                # self.keyed_decklist[index]])
 
         # organize by type
-        for card in holding_arr:
+        for card in self.holding_arr:
             if card[1].lower(
             ) in ["spell", "fast spell", "curse", "cursed relic",
                   "relic"]:
@@ -84,8 +113,8 @@ class Deck():
             else:
                 units_arr.append(card)
 
-    def export_arr(self):
-        """ format array to export to GUI """
+        type_alpha_cost_arr = [units_arr, spells_arr, power_arr]
+        return type_alpha_cost_arr
 
 
 def main():
@@ -95,9 +124,51 @@ def main():
     keyed_decklist = cd.create_keyed_decklist(deck, card_names, card_db)
 
     deck = Deck(keyed_decklist, card_db)
-    # alpha_deck = deck.alpha_sort()
-    deck.type_cost_alpha()
-    deck.type_alpha_cost()
+    cost_alpha_deck = deck.cost_alpha()
+    alpha_deck = deck.alpha()
+    type_cost_deck = deck.type_cost_alpha()
+    type_alpha_deck = deck.type_alpha_cost()
+
+    print('Cost Alpha')
+    print(cost_alpha_deck)
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('Alpha')
+    print(alpha_deck)
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('Type, Alpha')
+    print(type_alpha_deck[0])
+    print('------------')
+    print(type_alpha_deck[1])
+    print('------------')
+    print(type_alpha_deck[2])
+
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('Type, Cost')
+    print(type_cost_deck[0])
+    print('------------')
+    print(type_cost_deck[1])
+    print('------------')
+    print(type_cost_deck[2])
+
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('To get quantity of a card...')
+    print(type_alpha_deck[0][0][4])
 
 
 if __name__ == "__main__":
