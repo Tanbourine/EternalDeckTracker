@@ -21,7 +21,7 @@ class Card():
 
         # output_value = []
         # for card in deck_keys:
-            # output_value.append(card_database[card][value])
+            # output_value.append(card_db[card][value])
 
     def quantity(self):
         """ returns quantity of card """
@@ -107,7 +107,7 @@ def import_deck(decklist):
     return deck, card_names
 
 
-def create_keyed_decklist(deck, card_names, card_database):
+def create_keyed_decklist(deck, card_names, card_db):
     """ takes decklist csv and returns list of corresponding keys and quantities
     in dict """
 
@@ -116,7 +116,7 @@ def create_keyed_decklist(deck, card_names, card_database):
 
     # make list of keys to link decklist and json
     for card in deck:
-        for index, db_card in enumerate(card_database):
+        for index, db_card in enumerate(card_db):
             if card in db_card["Name"]:
                 deck_keys.append(index)
 
@@ -128,11 +128,11 @@ def create_keyed_decklist(deck, card_names, card_database):
     return keyed_decklist
 
 
-def create_card_obj_deck(keyed_decklist, card_database):
+def create_card_obj_deck(keyed_decklist, card_db):
     """ takes keyed decklist and returns a list of Card objects """
     deck_obj = []
     for card in keyed_decklist:
-        deck_obj.append(Card(card, card_database))
+        deck_obj.append(Card(card, card_db))
 
     return deck_obj
 
@@ -142,9 +142,9 @@ def main():
     # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
     # Health, Rarity, Type, ImageUrl
     deck, card_names = import_deck(DECKLIST)
-    card_database = import_json(CARD_DB)
-    keyed_decklist = create_keyed_decklist(deck, card_names, card_database)
-    deck_obj = create_card_obj_deck(keyed_decklist, card_database)
+    card_db = import_json(CARD_DB)
+    keyed_decklist = create_keyed_decklist(deck, card_names, card_db)
+    deck_obj = create_card_obj_deck(keyed_decklist, card_db)
     for i in range(len(keyed_decklist)):
         print(deck_obj[i].name())
         print(deck_obj[i].cost())
