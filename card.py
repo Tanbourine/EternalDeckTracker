@@ -124,12 +124,12 @@ def match_card_keys(card_names, card_database):
     return card_key
 
 
-def get_card_keys(deck, card_names, card_database):
+def create_keyed_decklist(deck, card_names, card_database):
     """ takes decklist csv and returns list of corresponding keys and quantities
     in dict """
 
     deck_keys = []
-    keyed_decklist = {}
+    keyed_decklist = []
 
     # make list of keys to link decklist and json
     for card in deck:
@@ -137,15 +137,12 @@ def get_card_keys(deck, card_names, card_database):
             if card in db_card["Name"]:
                 deck_keys.append(index)
 
-
-    # make dictionary of {card_key : quantity}
+    # make list of [card_key : quantity]
     # this is the new decklist since it can be used to retrieve all json data
     for index, card in enumerate(deck_keys):
-        keyed_decklist[card] = deck[card_names[index]]
+        keyed_decklist.append([card, deck[card_names[index]]])
 
     return keyed_decklist
-
-
 
 
 def card_index_to_name(deck_keys, card_database):
@@ -177,14 +174,11 @@ def main():
     deck, card_names = import_deck(DECKLIST)
     card_database = import_json(CARD_DB)
 
-    # print_all_json(card_database, "Name")
-    # print(card_database[0]["Name"])
-    # card_keys = match_card_keys(card_names, card_database)
-    deck_keys = get_card_keys(deck, card_names, card_database)
+    keyed_decklist = create_keyed_decklist(deck, card_names, card_database)
     # decklist_to_print = card_index_to_name(deck_keys, card_database)
     # output_value = get_value(deck_keys, "Name", card_database)
-    # card1 = Card(deck_keys[0], card_database)
-    # print(card1.type())
+    card1 = Card(keyed_decklist[0][0], card_database)
+    print(card1.cost())
 
 
 if __name__ == "__main__":
