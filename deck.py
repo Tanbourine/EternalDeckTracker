@@ -25,14 +25,13 @@ class Deck():
 
         # default deck sorting is type_alpha
         self.sort_method = 'type_alpha'
-        self.deck_sort(self.sort_method)
+        self.deck = self.deck_sort(self.sort_method)
 
         # initalize card probability
         self.update_probability()
 
         # save starting quantities of power cards
-        temp_deck = self.deck
-        self.starting_power = temp_deck
+        self.starting_power = self.get_starting_power()
 
     def create_card_obj_deck(self):
         """ takes keyed decklist and returns a list of Card objects """
@@ -41,6 +40,18 @@ class Deck():
             self.deck_obj.append(cd.Card(card, self.card_db))
 
         return self.deck_obj
+
+    def get_starting_power(self):
+        """ creates dict of {power name : starting quantity} """
+        starting_power = {}
+        for card_type in self.deck:
+            for card in card_type:
+                if card.card_type == 'Power':
+                    starting_power[card.name] = card.quantity
+
+        return starting_power
+
+
 
     def cost_alpha(self):  # pylint: disable=no-self-use
         """ comes as is from eternal """
@@ -112,6 +123,8 @@ class Deck():
         else:
             print("ERROR: Sort method not available")
 
+        return self.deck
+
     def count_unique(self):
         """ counts number of unique cards in deck """
         units_arr, spells_arr, power_arr = self.type_cost()
@@ -182,21 +195,16 @@ class Deck():
             if self.deck[card_type][index].name in ['Fire Sigil', 'Primal Sigil',
                                                   'Shadow Sigil',
                                                   'Justice Sigil', 'Time Sigil']:
-                self.deck[card_type][index].quantity += 1
-                print("Added", self.deck[card_type][index].name, ':', 'You have',
-                      self.deck[card_type][index].quantity, 'left')
 
-
-                # # if current num of pwr cards is less than starting num of pwr
-                # print(self.starting_power[2][index][4])
-                # if self.deck[card_type][index][4] < self.starting_power[card_type][index][4]:
-                    # self.deck[card_type][index][4] += 1
-                    # print(
-                        # "Added", self.deck[card_type][
-                            # index].name, ':', 'You have', self.deck[card_type][index][4], 'left')
-                # else:
-                    # print(
-                        # "ADD_ERROR: Cannot have more power cards than starting amount")
+                # if current num of pwr cards is less than starting num of pwr
+                if self.deck[card_type][index].quantity < self.starting_power[self.deck[card_type][index].name]:
+                    self.deck[card_type][index].quantity += 1
+                    print(
+                        "Added", self.deck[card_type][
+                            index].name, ':', 'You have', self.deck[card_type][index].quantity, 'left')
+                else:
+                    print(
+                        "ADD_ERROR: Cannot have more power cards than starting amount")
 
             elif self.deck[card_type][index].quantity < 4:
                 self.deck[card_type][index].quantity += 1
@@ -233,14 +241,6 @@ class Deck():
                 merged_deck.append(card)
         return merged_deck
 
-    def probability(self):
-        """ returns a list of probabilities """
-        prob_arr = []
-        merged_deck = self.merge_types()
-        for card in merged_deck:
-            prob_arr.append(card[5])
-
-        return prob_arr
 
     def card_names(self):
         """ returns array of card names in index order """
@@ -281,9 +281,10 @@ def main():
     deck = Deck(DECKLIST, CARD_DB)
 
 
+    # print(deck.show_property('Name'))
 
     card_type = 2
-    card_index = 4
+    card_index = 3
 
     print('You have', deck.deck[card_type][card_index].quantity,
           deck.deck[card_type][card_index].name)
@@ -293,33 +294,44 @@ def main():
 
     deck.subtract_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
+    print('')
+
+
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
+    print('')
+
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
 
     deck.add_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
     deck.add_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
     deck.add_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
     deck.add_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
     deck.add_card(card_type, card_index)
     print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].quantity), '%')
+          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
     print('')
 
 if __name__ == "__main__":
