@@ -127,18 +127,9 @@ def create_keyed_decklist(deck, card_names, card_db):
 
     return keyed_decklist
 
-
-# def create_card_obj_deck(keyed_decklist, card_db):
-    # """ takes keyed decklist and returns a list of Card objects """
-    # deck_obj = []
-    # for card in keyed_decklist:
-        # deck_obj.append(Card(card, card_db))
-
-    # return deck_obj
-
-
 def main():
     """ main function """
+    # pylint: disable=unused-variable
     # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
     # Health, Rarity, Type, ImageUrl
     deck, card_names = import_deck(DECKLIST)

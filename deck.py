@@ -18,14 +18,18 @@ class Deck():
         self.keyed_decklist = keyed_decklist
         self.card_db = card_db
         self.decklist = self.create_card_obj_deck()
-        # self.decklist = cd.create_card_obj_deck(keyed_decklist, card_db)
 
         self.holding_arr = []
 
         for index, card in enumerate(self.decklist):
             self.holding_arr.append(
                 [card.name(), card.type(), card.cost(),
-                 self.keyed_decklist[index][0], self.keyed_decklist[index][1]])
+                 self.keyed_decklist[index][0], self.keyed_decklist[index][1],
+                 0.0])
+
+        # default deck sorting is type_alpha
+        self.deck_sort('type_alpha')
+        self.update_probability()
 
     def create_card_obj_deck(self):
         """ takes keyed decklist and returns a list of Card objects """
@@ -78,6 +82,26 @@ class Deck():
 
         return units_arr, spells_arr, power_arr
 
+    def deck_sort(self, sort_method):
+        """ sorts the deck by specified method
+            Available sorts:
+            'type_alpha', 'type_cost', 'alpha', 'cost_alpha' """
+
+        if sort_method == 'type_alpha':
+            self.deck = self.type_alpha()
+
+        elif sort_method == 'type_cost':
+            self.deck = self.type_cost()
+
+        elif sort_method == 'alpha':
+            self.deck = self.alpha()
+
+        elif sort_method == 'cost_alpha':
+            self.deck = self.cost_alpha()
+
+        else:
+            print("ERROR: Sort method not available")
+
     def count_unique(self):
         """ counts number of unique cards in deck """
         units_arr, spells_arr, power_arr = self.type_cost()
@@ -112,61 +136,70 @@ class Deck():
 
         return units, spells, power, total_cards
 
+    def subtract_card(self, card_type, index):
+        """ subtract one to the card given the index in the deck
+            card_type = 0 for units, 1 for spells, 2 for power
+            index = position in deck array
+            return -> decklist with updated quantity
+            NOTE: This is not the json key! """
 
-def main():  # pylint: disable=too-many-statements
+        if self.deck[card_type][index][4] > 0:
+            self.deck[card_type][index][4] -= 1
+            print("Subtracted", self.deck[card_type][index][0])
+
+        else:
+            print("ERROR: Cannot have less than zero cards")
+
+        self.update_probability()
+
+    def add_card(self, card_type, index):
+        """ add one to the card given the index in the deck
+            card_type = 0 for units, 1 for spells, 2 for power
+            index = position in deck array
+            return -> decklist with updated quantity
+            NOTE: This is not the json key! """
+
+        if self.deck[card_type][index][4] < 4:
+            self.deck[card_type][index][4] += 1
+            print("Added", self.deck[card_type][index][0])
+
+        elif self.deck[card_type][index][1] == 'Power':
+            # check how many lands are in original deck
+            # to make sure cannot go more than max
+            temp_deck = cd.import_deck(DECKLIST)
+
+        else:
+            print("ERROR: Cannot have more than 4 cards")
+
+        self.update_probability()
+
+    def update_probability(self):
+        """ updates probabilty of drawing cards """
+
+        card_count = self.count()
+
+        for card_type in self.deck:
+            for card in card_type:
+                probability = card[4] / card_count[3]
+                card[5] = probability * 100
+
+
+def main():
+    # pylint: disable=too-many-statements, unused-variable, too-many-locals
     """ main function """
     deck, card_names = cd.import_deck(DECKLIST)
     card_db = cd.import_json(CARD_DB)
     keyed_decklist = cd.create_keyed_decklist(deck, card_names, card_db)
 
     deck = Deck(keyed_decklist, card_db)
-    cost_alpha_deck = deck.cost_alpha()
-    alpha_deck = deck.alpha()
-    type_cost_deck = deck.type_cost()
-    type_alpha_deck = deck.type_alpha()
-    # units, spells, power, total_cards = deck.count_unique()
+    # units_uniq, spells_uniq, power_uniq, total_cards_uniq =
+    # deck.count_unique()
     units, spells, power, total_cards = deck.count()
 
-    print('Cost Alpha')
-    print(cost_alpha_deck)
-    print('')
-    print('===============')
-    print('===============')
-    print('')
-
-    print('Alpha')
-    print(alpha_deck)
-    print('')
-    print('===============')
-    print('===============')
-    print('')
-
-    print('Type, Alpha')
-    print(type_alpha_deck[0])
-    print('------------')
-    print(type_alpha_deck[1])
-    print('------------')
-    print(type_alpha_deck[2])
-
-    print('')
-    print('===============')
-    print('===============')
-    print('')
-
-    print('Type, Cost')
-    print(type_cost_deck[0])
-    print('------------')
-    print(type_cost_deck[1])
-    print('------------')
-    print(type_cost_deck[2])
-
-    print('')
-    print('===============')
-    print('===============')
-    print('')
-
-    print('To get quantity of a card...')
-    print(type_alpha_deck[0][0][4])
+    # print('You have %d cards in total' % (total_cards_uniq,))
+    # print('You have %d units' % (units_uniq,))
+    # print('You have %d spells' % (spells_uniq,))
+    # print('You have %d power cards' % (power_uniq, ))
 
     print('')
     print('===============')
@@ -177,6 +210,30 @@ def main():  # pylint: disable=too-many-statements
     print('You have %d units' % (units,))
     print('You have %d spells' % (spells,))
     print('You have %d power cards' % (power,))
+
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+
+    deck.subtract_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.subtract_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(0, 0)
+    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    deck.add_card(2, 0)
+    print('Probabilty of drawing', deck.deck[2][0][0], 'is', deck.deck[2][0][5])
 
 
 if __name__ == "__main__":
