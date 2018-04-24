@@ -14,7 +14,7 @@ def main():
     keyed_decklist = cd.create_keyed_decklist(deck, card_names, card_db)
 
     deck = dk.Deck(keyed_decklist, card_db)
-    type_alpha_deck = deck.type_alpha_cost()
+    type_alpha_deck = deck.type_alpha()
 
     # returns list -> [name, type, cost, key, quantity]
 

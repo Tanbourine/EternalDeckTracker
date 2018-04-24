@@ -44,11 +44,11 @@ class Deck():
         alpha_arr = sorted(self.holding_arr)
         return alpha_arr
 
-    def type_alpha_cost(self):
+    def type_alpha(self):
         """ sorts by type then alpha then cost
             returns [units, spells, power] """
 
-        units_arr, spells_arr, power_arr = self.type_cost_alpha()
+        units_arr, spells_arr, power_arr = self.type_cost()
 
         units_arr.sort()
         spells_arr.sort()
@@ -56,7 +56,7 @@ class Deck():
 
         return units_arr, spells_arr, power_arr
 
-    def type_cost_alpha(self):
+    def type_cost(self):
         """ sorts by type then color then alpha
             returns [units, spells, power] """
         spells_arr = []
@@ -67,7 +67,7 @@ class Deck():
         for card in self.holding_arr:
             if card[1].lower(
             ) in ["spell", "fast spell", "curse", "cursed relic",
-                  "relic", "weapon"]:
+                  "relic", "weapon", "relic weapon"]:
                 spells_arr.append(card)
 
             elif card[1].lower() in ["power"]:
@@ -88,8 +88,8 @@ def main():
     deck = Deck(keyed_decklist, card_db)
     cost_alpha_deck = deck.cost_alpha()
     alpha_deck = deck.alpha()
-    type_cost_deck = deck.type_cost_alpha()
-    type_alpha_deck = deck.type_alpha_cost()
+    type_cost_deck = deck.type_cost()
+    type_alpha_deck = deck.type_alpha()
 
     print('Cost Alpha')
     print(cost_alpha_deck)
