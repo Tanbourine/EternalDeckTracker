@@ -78,8 +78,42 @@ class Deck():
 
         return units_arr, spells_arr, power_arr
 
+    def count_unique(self):
+        """ counts number of unique cards in deck """
+        units_arr, spells_arr, power_arr = self.type_cost()
 
-def main():
+        units = len(units_arr)
+        spells = len(spells_arr)
+        power = len(power_arr)
+
+        total_cards = units + spells + power
+
+        return units, spells, power, total_cards
+
+    def count(self):
+        """ counts quantity of cards left in deck """
+
+        units = 0
+        spells = 0
+        power = 0
+
+        units_arr, spells_arr, power_arr = self.type_cost()
+
+        for card in units_arr:
+            units += card[4]
+
+        for card in spells_arr:
+            spells += card[4]
+
+        for card in power_arr:
+            power += card[4]
+
+        total_cards = units + spells + power
+
+        return units, spells, power, total_cards
+
+
+def main():  # pylint: disable=too-many-statements
     """ main function """
     deck, card_names = cd.import_deck(DECKLIST)
     card_db = cd.import_json(CARD_DB)
@@ -90,6 +124,8 @@ def main():
     alpha_deck = deck.alpha()
     type_cost_deck = deck.type_cost()
     type_alpha_deck = deck.type_alpha()
+    # units, spells, power, total_cards = deck.count_unique()
+    units, spells, power, total_cards = deck.count()
 
     print('Cost Alpha')
     print(cost_alpha_deck)
@@ -131,6 +167,16 @@ def main():
 
     print('To get quantity of a card...')
     print(type_alpha_deck[0][0][4])
+
+    print('')
+    print('===============')
+    print('===============')
+    print('')
+
+    print('You have %d cards in total' % (total_cards,))
+    print('You have %d units' % (units,))
+    print('You have %d spells' % (spells,))
+    print('You have %d power cards' % (power,))
 
 
 if __name__ == "__main__":
