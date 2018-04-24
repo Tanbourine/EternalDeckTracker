@@ -16,7 +16,7 @@ class Card():
     def __init__(self, card_key, card_db):
         self.card_key = card_key
         self.card_db = card_db
-        self.card_info = card_db[card_key[0]]
+        self.card_data = card_db[card_key[0]]
         self.card_quantity = card_key[1]
 
         # output_value = []
@@ -29,47 +29,47 @@ class Card():
 
     def setnumber(self):
         """ returns card setnumber """
-        return self.card_info["SetNumber"]
+        return self.card_data["SetNumber"]
 
     def eternalid(self):
         """ returns card eternalid """
-        return self.card_info["EternalID"]
+        return self.card_data["EternalID"]
 
     def name(self):
         """ returns card name """
-        return self.card_info["Name"]
+        return self.card_data["Name"]
 
     def cardtext(self):
         """ returns card text """
-        return self.card_info["CardText"]
+        return self.card_data["CardText"]
 
     def cost(self):
         """ returns card cost """
-        return self.card_info["Cost"]
+        return self.card_data["Cost"]
 
     def influence(self):
         """ returns card influence """
-        return self.card_info["Influence"]
+        return self.card_data["Influence"]
 
     def attack(self):
         """ returns card attack """
-        return self.card_info["Attack"]
+        return self.card_data["Attack"]
 
     def health(self):
         """ returns card health """
-        return self.card_info["Health"]
+        return self.card_data["Health"]
 
     def rarity(self):
         """ returns card rarity """
-        return self.card_info["Rarity"]
+        return self.card_data["Rarity"]
 
     def type(self):
         """ returns card type """
-        return self.card_info["Type"]
+        return self.card_data["Type"]
 
     def imageurl(self):
         """ returns card imageurl """
-        return self.card_info["ImageUrl"]
+        return self.card_data["ImageUrl"]
 
 
 def import_json(json_file):
@@ -135,13 +135,8 @@ def main():
     deck = import_deck(DECKLIST)
     card_db = import_json(CARD_DB)
     keyed_decklist = create_keyed_decklist(deck, card_db)
-    # deck_obj = create_card_obj_deck(keyed_decklist, card_db)
-    # for i in range(len(keyed_decklist)):
-        # print(deck_obj[i].name())
-        # print(deck_obj[i].cost())
-        # print(deck_obj[i].influence())
-        # print('-----------')
-        # print('')
+    card1 = Card(keyed_decklist[0], card_db)
+    print(card1.name())
 
 
 if __name__ == "__main__":

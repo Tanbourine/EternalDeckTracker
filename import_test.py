@@ -19,6 +19,8 @@ def main():
     deck.add_card(0,0)
     print('Its probability to draw in this deck is:', '{0: .2f}'.format(deck.probability()[0]))
 
+    # ISSUE WITH DECK_OBJ NOT BEING SORTED. Might reconsider restructuring to perform all objects on the object
+
 
 
 if __name__ == "__main__":
