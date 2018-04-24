@@ -26,7 +26,7 @@ class Deck():
 
         for index, card in enumerate(self.decklist):
             self.holding_arr.append(
-                [card.name(), card.type(), card.cost(),
+                [card.name, card.card_type, card.cost,
                  self.keyed_decklist[index][0], self.keyed_decklist[index][1],
                  0.0])
 
@@ -259,7 +259,7 @@ def main():
     # create deck from keyed_decklist
     deck = Deck(DECKLIST, CARD_DB)
 
-    print(deck.deck_obj[0].name())
+    print(deck.deck_obj[0].name)
 
 
     # card_type = 2

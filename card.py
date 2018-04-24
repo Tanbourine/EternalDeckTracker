@@ -17,59 +17,20 @@ class Card():
         self.card_key = card_key
         self.card_db = card_db
         self.card_data = card_db[card_key[0]]
-        self.card_quantity = card_key[1]
+        self.quantity = card_key[1]
+        self.probability = 0.0
+        self.setnumber = self.card_data["SetNumber"]
+        self.eternalid = self.card_data["EternalID"]
+        self.name = self.card_data["Name"]
+        self.cardtext = self.card_data["CardText"]
+        self.cost = self.card_data["Cost"]
+        self.influence = self.card_data["Influence"]
+        self.attack = self.card_data["Attack"]
+        self.health = self.card_data["Health"]
+        self.rarity = self.card_data["Rarity"]
+        self.card_type = self.card_data["Type"]
+        self.imageurl = self.card_data["ImageUrl"]
 
-        # output_value = []
-        # for card in deck_keys:
-            # output_value.append(card_db[card][value])
-
-    def quantity(self):
-        """ returns quantity of card """
-        return self.card_quantity
-
-    def setnumber(self):
-        """ returns card setnumber """
-        return self.card_data["SetNumber"]
-
-    def eternalid(self):
-        """ returns card eternalid """
-        return self.card_data["EternalID"]
-
-    def name(self):
-        """ returns card name """
-        return self.card_data["Name"]
-
-    def cardtext(self):
-        """ returns card text """
-        return self.card_data["CardText"]
-
-    def cost(self):
-        """ returns card cost """
-        return self.card_data["Cost"]
-
-    def influence(self):
-        """ returns card influence """
-        return self.card_data["Influence"]
-
-    def attack(self):
-        """ returns card attack """
-        return self.card_data["Attack"]
-
-    def health(self):
-        """ returns card health """
-        return self.card_data["Health"]
-
-    def rarity(self):
-        """ returns card rarity """
-        return self.card_data["Rarity"]
-
-    def type(self):
-        """ returns card type """
-        return self.card_data["Type"]
-
-    def imageurl(self):
-        """ returns card imageurl """
-        return self.card_data["ImageUrl"]
 
 
 def import_json(json_file):
@@ -136,7 +97,7 @@ def main():
     card_db = import_json(CARD_DB)
     keyed_decklist = create_keyed_decklist(deck, card_db)
     card1 = Card(keyed_decklist[0], card_db)
-    print(card1.name())
+    print(card1.name)
 
 
 if __name__ == "__main__":
