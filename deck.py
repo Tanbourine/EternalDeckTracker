@@ -236,6 +236,16 @@ class Deck():
 
         return prob_arr
 
+    def card_names(self):
+        """ returns array of card names in index order """
+        name_arr = []
+
+        for card in self.merge_types():
+            name_arr.append(card[0])
+
+        return name_arr
+
+
 
 
 
@@ -249,26 +259,28 @@ def main():
     # create deck from keyed_decklist
     deck = Deck(DECKLIST, CARD_DB)
 
+    print(deck.card_names())
 
-    card_type = 2
-    card_index = 4
 
-    print('You have', deck.deck[card_type][card_index][4],
-          deck.deck[card_type][card_index][0])
-    print('')
+    # card_type = 2
+    # card_index = 4
 
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
+    # print('You have', deck.deck[card_type][card_index][4],
+          # deck.deck[card_type][card_index][0])
+    # print('')
+
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
 
 if __name__ == "__main__":
     main()
