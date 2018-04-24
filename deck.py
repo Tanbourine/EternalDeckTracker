@@ -20,18 +20,19 @@ class Deck():
         self.keyed_decklist = cd.create_keyed_decklist(self.csv_deck, self.card_db)
 
         # create deck
-        self.decklist = self.create_card_obj_deck()
+        self.raw_deck = self.create_card_obj_deck()
 
         self.holding_arr = []
 
-        for index, card in enumerate(self.decklist):
+        for index, card in enumerate(self.raw_deck):
             self.holding_arr.append(
                 [card.name, card.card_type, card.cost,
                  self.keyed_decklist[index][0], self.keyed_decklist[index][1],
                  0.0])
 
         # default deck sorting is type_alpha
-        self.deck_sort('type_alpha')
+        self.sort_method = 'type_alpha'
+        self.deck_sort(self.sort_method)
 
         # initalize card probability
         self.update_probability()
@@ -50,11 +51,12 @@ class Deck():
 
     def cost_alpha(self):  # pylint: disable=no-self-use
         """ comes as is from eternal """
-        return self.holding_arr
+        cost_alpha_arr = sorted(self.raw_deck, key=lambda x: x.cost)
+        return cost_alpha_arr
 
     def alpha(self):
         """ sorts alphabetical """
-        alpha_arr = sorted(self.holding_arr)
+        alpha_arr = sorted(self.raw_deck, key=lambda x: x.name)
         return alpha_arr
 
     def type_alpha(self):
@@ -63,9 +65,9 @@ class Deck():
 
         units_arr, spells_arr, power_arr = self.type_cost()
 
-        units_arr.sort()
-        spells_arr.sort()
-        power_arr.sort()
+        units_arr.sort(key=lambda x: x.name)
+        spells_arr.sort(key=lambda x: x.name)
+        power_arr.sort(key=lambda x: x.name)
 
         return units_arr, spells_arr, power_arr
 
@@ -76,18 +78,20 @@ class Deck():
         power_arr = []
         units_arr = []
 
+
         # organize by type
-        for card in self.holding_arr:
-            if card[1].lower(
+        for card in self.raw_deck:
+            if card.card_type.lower(
             ) in ["spell", "fast spell", "curse", "cursed relic",
                   "relic", "weapon", "relic weapon"]:
                 spells_arr.append(card)
 
-            elif card[1].lower() in ["power"]:
+            elif card.card_type.lower() in ["power"]:
                 power_arr.append(card)
 
             else:
                 units_arr.append(card)
+
 
         return units_arr, spells_arr, power_arr
 
@@ -98,15 +102,19 @@ class Deck():
 
         if sort_method == 'type_alpha':
             self.deck = self.type_alpha()
+            self.sort_method = 'type_alpha'
 
         elif sort_method == 'type_cost':
             self.deck = self.type_cost()
+            self.sort_method = 'type_cost'
 
         elif sort_method == 'alpha':
             self.deck = self.alpha()
+            self.sort_method = 'alpha'
 
         elif sort_method == 'cost_alpha':
             self.deck = self.cost_alpha()
+            self.sort_method = 'cost_alpha'
 
         else:
             print("ERROR: Sort method not available")
@@ -133,13 +141,13 @@ class Deck():
         units_arr, spells_arr, power_arr = self.type_cost()
 
         for card in units_arr:
-            units += card[4]
+            units += card.quantity
 
         for card in spells_arr:
-            spells += card[4]
+            spells += card.quantity
 
         for card in power_arr:
-            power += card[4]
+            power += card.quantity
 
         total_cards = units + spells + power
 
@@ -217,14 +225,19 @@ class Deck():
 
         for card_type in self.deck:
             for card in card_type:
-                probability = card[4] / card_count[3]
-                card[5] = probability * 100
+                probability = card.quantity / card_count[3]
+                card.probability = probability * 100
 
     def merge_types(self):
         """ merges the three type sections into one large array """
         merged_deck = []
-        for card_type in self.deck:
-            merged_deck.extend(card_type)
+        if self.sort_method in ['type_cost', 'type_alpha']:
+            for card in self.deck:
+                merged_deck.extend(card)
+
+        if self.sort_method in ['alpha', 'cost_alpha']:
+            for card in self.deck:
+                merged_deck.append(card)
         return merged_deck
 
     def probability(self):
@@ -241,9 +254,24 @@ class Deck():
         name_arr = []
 
         for card in self.merge_types():
-            name_arr.append(card[0])
+            name_arr.append(card.name)
 
         return name_arr
+
+    def show_property(self, *args):
+        """ returns a list of whatever keys you input """ 
+        # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
+        # Health, Rarity, Type, ImageUrl
+        output_arr = []
+
+        for card in self.merge_types():
+            properties = []
+            for keys in args:
+                properties.append(card.card_data[keys])
+
+            output_arr.append(properties)
+
+        return output_arr
 
 
 
@@ -259,7 +287,8 @@ def main():
     # create deck from keyed_decklist
     deck = Deck(DECKLIST, CARD_DB)
 
-    print(deck.deck_obj[0].name)
+    print(deck.show_property('Name', 'Type', 'Cost'))
+
 
 
     # card_type = 2
