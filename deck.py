@@ -42,11 +42,11 @@ class Deck():
 
     def create_card_obj_deck(self):
         """ takes keyed decklist and returns a list of Card objects """
-        deck_obj = []
+        self.deck_obj = []
         for card in self.keyed_decklist:
-            deck_obj.append(cd.Card(card, self.card_db))
+            self.deck_obj.append(cd.Card(card, self.card_db))
 
-        return deck_obj
+        return self.deck_obj
 
     def cost_alpha(self):  # pylint: disable=no-self-use
         """ comes as is from eternal """
@@ -259,7 +259,7 @@ def main():
     # create deck from keyed_decklist
     deck = Deck(DECKLIST, CARD_DB)
 
-    print(deck.card_names())
+    print(deck.deck_obj[0].name())
 
 
     # card_type = 2

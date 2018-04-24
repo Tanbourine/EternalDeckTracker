@@ -79,32 +79,6 @@ def import_json(json_file):
     return parsed_json
 
 
-# def import_deck(decklist):
-    # """ import csv file to array
-        # deck = {card_name : quantity}
-        # card_name = [card_names] """
-    # card_names = []
-    # deck = {}
-    # with open(decklist, 'r') as csv_file:
-        # csv_reader = csv.reader(csv_file)
-
-        # Importting and formatting into [quantity, name]
-        # for card in csv_reader:
-            # each line imports like this:
-            # 2 Permafrost (Set1 #193)
-
-            # isolating quantity of each card
-            # quantity = int(card[0][0:2])
-
-            # paranthesis is first non-name char
-            # find_paranthesis = card[0].find("(")
-            # name = card[0][2:find_paranthesis]
-            # name = name.strip()
-
-            # card_names.append(name)
-            # deck[name] = quantity
-
-    # return deck, card_names
 
 def import_deck(decklist):
     """ import csv file to array

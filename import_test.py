@@ -12,6 +12,8 @@ def main():
 
     deck = dk.Deck(DECKLIST, CARD_DB)
     print(deck.card_names())
+    print('First card of deck is:', deck.deck_obj[0].name())
+    print('Its cost is:',deck.deck_obj[0].cost())
 
 
 
