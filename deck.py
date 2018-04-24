@@ -232,7 +232,7 @@ class Deck():
         prob_arr = []
         merged_deck = self.merge_types()
         for card in merged_deck:
-            prob_arr.append(card[4])
+            prob_arr.append(card[5])
 
         return prob_arr
 

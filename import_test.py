@@ -14,6 +14,10 @@ def main():
     print(deck.card_names())
     print('First card of deck is:', deck.deck_obj[0].name())
     print('Its cost is:',deck.deck_obj[0].cost())
+    print('Its probability to draw in this deck is:', '{0: .2f}'.format(deck.probability()[0]))
+
+    deck.add_card(0,0)
+    print('Its probability to draw in this deck is:', '{0: .2f}'.format(deck.probability()[0]))
 
 
 
