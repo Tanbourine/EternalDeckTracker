@@ -34,7 +34,7 @@ class Deck():
         self.update_probability()
 
         # save starting quantities of power cards
-        self.starting_power = self.deck[2]
+        self.starting_power = self.type_cost()
 
     def create_card_obj_deck(self):
         """ takes keyed decklist and returns a list of Card objects """
@@ -150,7 +150,7 @@ class Deck():
 
         if self.deck[card_type][index][4] > 0:
             self.deck[card_type][index][4] -= 1
-            print("Subtracted", self.deck[card_type][index][0], 'You have',
+            print("Subtracted", self.deck[card_type][index][0], ':', 'You have',
                   self.deck[card_type][index][4], 'left')
 
         else:
@@ -167,7 +167,7 @@ class Deck():
 
         if self.deck[card_type][index][4] < 4:
             self.deck[card_type][index][4] += 1
-            print("Added", self.deck[card_type][index][0], 'You have',
+            print("Added", self.deck[card_type][index][0], ':', 'You have',
                   self.deck[card_type][index][4], 'left')
 
         elif self.deck[card_type][index][1] == 'Power':
@@ -180,17 +180,19 @@ class Deck():
 
                 # if current num of pwr cards is less than starting num of pwr
                 # cards
-                if self.deck[card_type][index][4] < self.starting_power[index][4]:
+                print(self.starting_power[2][index][4])
+                if self.deck[card_type][index][4] < self.starting_power[2][index][4]:
                     self.deck[card_type][index][4] += 1
-                    print("Added", self.deck[card_type][index][0], 'You have',
-                          self.deck[card_type][index][4], 'left')
+                    print(
+                        "Added", self.deck[card_type][
+                            index][0], ':', 'You have', self.deck[card_type][index][4], 'left')
                 else:
                     print(
                         "ERROR: Cannot have more power cards than starting amount")
 
             elif self.deck[card_type][index][4] < 4:
                 self.deck[card_type][index][4] += 1
-                print("Added", self.deck[card_type][index][0], 'You have',
+                print("Added", self.deck[card_type][index][0], ':', 'You have',
                       self.deck[card_type][index][4], 'left')
 
             else:
@@ -215,6 +217,7 @@ class Deck():
 def main():
     # pylint: disable=too-many-statements, unused-variable, too-many-locals
     """ main function """
+
     # import deck from csv
     deck = cd.import_deck(DECKLIST)
 
@@ -235,26 +238,53 @@ def main():
     print('')
     print('')
 
-    print('You have', deck.deck[1][3][4], deck.deck[1][3][0])
+    card_type = 2
+    card_index = 4
+
+    print('You have', deck.deck[card_type][card_index][4],
+          deck.deck[card_type][card_index][0])
     print('')
 
-    deck.add_card(1, 3)
-    print('Probabilty of drawing', deck.deck[1][3][0], ':',
-          '{0: .2f}'.format(deck.deck[1][3][5]), '%')
+    deck.add_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
     print('')
-    deck.add_card(1, 3)
-    print('Probabilty of drawing', deck.deck[1][3][0], ':',
-          '{0: .2f}'.format(deck.deck[1][3][5]), '%')
+    deck.add_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
     print('')
-    deck.add_card(1, 3)
-    print('Probabilty of drawing', deck.deck[1][3][0], ':',
-          '{0: .2f}'.format(deck.deck[1][3][5]), '%')
+    deck.add_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
     print('')
-    deck.add_card(1, 3)
-    print('Probabilty of drawing', deck.deck[1][3][0], ':',
-          '{0: .2f}'.format(deck.deck[1][3][5]), '%')
+    deck.add_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
     print('')
-
+    deck.add_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
+    deck.subtract_card(card_type, card_index)
+    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    print('')
 
 if __name__ == "__main__":
     main()
