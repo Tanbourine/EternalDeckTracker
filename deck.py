@@ -213,6 +213,24 @@ class Deck():
                 probability = card[4] / card_count[3]
                 card[5] = probability * 100
 
+    def merge_types(self):
+        """ merges the three type sections into one large array """
+        merged_deck = []
+        for card_type in self.deck:
+            merged_deck.extend(card_type)
+        return merged_deck
+
+    def probability(self):
+        """ returns a list of probabilities """
+        prob_arr = []
+        merged_deck = self.merge_types()
+        for card in merged_deck:
+            prob_arr.append(card[4])
+
+        return prob_arr
+
+
+
 
 def main():
     # pylint: disable=too-many-statements, unused-variable, too-many-locals
@@ -230,61 +248,63 @@ def main():
     # create deck from keyed_decklist
     deck = Deck(keyed_decklist, card_db)
 
-    units, spells, power, total_cards = deck.count()
-    print('You have %d cards in total' % (total_cards,))
-    print('You have %d units' % (units,))
-    print('You have %d spells' % (spells,))
-    print('You have %d power cards' % (power,))
-    print('')
-    print('')
+    prob_arr = deck.probability()
 
-    card_type = 2
-    card_index = 4
+    # units, spells, power, total_cards = deck.count()
+    # print('You have %d cards in total' % (total_cards,))
+    # print('You have %d units' % (units,))
+    # print('You have %d spells' % (spells,))
+    # print('You have %d power cards' % (power,))
+    # print('')
+    # print('')
 
-    print('You have', deck.deck[card_type][card_index][4],
-          deck.deck[card_type][card_index][0])
-    print('')
+    # card_type = 2
+    # card_index = 4
 
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
-    print('')
+    # print('You have', deck.deck[card_type][card_index][4],
+          # deck.deck[card_type][card_index][0])
+    # print('')
+
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
 
 if __name__ == "__main__":
     main()
