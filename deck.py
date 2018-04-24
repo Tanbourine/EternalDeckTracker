@@ -4,8 +4,6 @@
 
 import card as cd
 
-DECKLIST = 'deck.csv'
-CARD_DB = 'eternal-cards-1.31.json'
 
 
 class Deck():
@@ -14,9 +12,14 @@ class Deck():
         caps is major category, lower is tiebreakers
         returns list -> [name, type, cost, key, quantity]"""
 
-    def __init__(self, keyed_decklist, card_db):
-        self.keyed_decklist = keyed_decklist
-        self.card_db = card_db
+
+    def __init__(self, decklist_file, card_db_file):
+
+        self.csv_deck = cd.import_deck(decklist_file)
+        self.card_db = cd.import_json(card_db_file)
+        self.keyed_decklist = cd.create_keyed_decklist(self.csv_deck, self.card_db)
+
+        # create deck
         self.decklist = self.create_card_obj_deck()
 
         self.holding_arr = []
@@ -29,15 +32,21 @@ class Deck():
 
         # default deck sorting is type_alpha
         self.deck_sort('type_alpha')
+
+        # initalize card probability
         self.update_probability()
+
+        # save starting quantities of power cards
+        temp_deck = self.deck
+        self.starting_power = temp_deck
 
     def create_card_obj_deck(self):
         """ takes keyed decklist and returns a list of Card objects """
-        deck_obj = []
+        self.deck_obj = []
         for card in self.keyed_decklist:
-            deck_obj.append(cd.Card(card, self.card_db))
+            self.deck_obj.append(cd.Card(card, self.card_db))
 
-        return deck_obj
+        return self.deck_obj
 
     def cost_alpha(self):  # pylint: disable=no-self-use
         """ comes as is from eternal """
@@ -145,10 +154,11 @@ class Deck():
 
         if self.deck[card_type][index][4] > 0:
             self.deck[card_type][index][4] -= 1
-            print("Subtracted", self.deck[card_type][index][0])
+            print("Subtracted", self.deck[card_type][index][0], ':', 'You have',
+                  self.deck[card_type][index][4], 'left')
 
         else:
-            print("ERROR: Cannot have less than zero cards")
+            print("SUBTRACT_ERROR: Cannot have less than zero cards")
 
         self.update_probability()
 
@@ -161,15 +171,42 @@ class Deck():
 
         if self.deck[card_type][index][4] < 4:
             self.deck[card_type][index][4] += 1
-            print("Added", self.deck[card_type][index][0])
+            print("Added", self.deck[card_type][index][0], ':', 'You have',
+                  self.deck[card_type][index][4], 'left')
 
         elif self.deck[card_type][index][1] == 'Power':
             # check how many lands are in original deck
             # to make sure cannot go more than max
-            temp_deck = cd.import_deck(DECKLIST)
+
+            if self.deck[card_type][index][0] in ['Fire Sigil', 'Primal Sigil',
+                                                  'Shadow Sigil',
+                                                  'Justice Sigil', 'Time Sigil']:
+                self.deck[card_type][index][4] += 1
+                print("Added", self.deck[card_type][index][0], ':', 'You have',
+                      self.deck[card_type][index][4], 'left')
+
+
+                # # if current num of pwr cards is less than starting num of pwr
+                # print(self.starting_power[2][index][4])
+                # if self.deck[card_type][index][4] < self.starting_power[card_type][index][4]:
+                    # self.deck[card_type][index][4] += 1
+                    # print(
+                        # "Added", self.deck[card_type][
+                            # index][0], ':', 'You have', self.deck[card_type][index][4], 'left')
+                # else:
+                    # print(
+                        # "ADD_ERROR: Cannot have more power cards than starting amount")
+
+            elif self.deck[card_type][index][4] < 4:
+                self.deck[card_type][index][4] += 1
+                print("Added", self.deck[card_type][index][0], ':', 'You have',
+                      self.deck[card_type][index][4], 'left')
+
+            else:
+                print("ADD_ERROR: Cannot have more than 4 of the same cards")
 
         else:
-            print("ERROR: Cannot have more than 4 cards")
+            print("ADD_ERROR: Cannot have more than 4 of the same cards")
 
         self.update_probability()
 
@@ -183,58 +220,67 @@ class Deck():
                 probability = card[4] / card_count[3]
                 card[5] = probability * 100
 
+    def merge_types(self):
+        """ merges the three type sections into one large array """
+        merged_deck = []
+        for card_type in self.deck:
+            merged_deck.extend(card_type)
+        return merged_deck
+
+    def probability(self):
+        """ returns a list of probabilities """
+        prob_arr = []
+        merged_deck = self.merge_types()
+        for card in merged_deck:
+            prob_arr.append(card[4])
+
+        return prob_arr
+
+    def card_names(self):
+        """ returns array of card names in index order """
+        name_arr = []
+
+        for card in self.merge_types():
+            name_arr.append(card[0])
+
+        return name_arr
+
+
+
+
 
 def main():
     # pylint: disable=too-many-statements, unused-variable, too-many-locals
     """ main function """
-    deck, card_names = cd.import_deck(DECKLIST)
-    card_db = cd.import_json(CARD_DB)
-    keyed_decklist = cd.create_keyed_decklist(deck, card_names, card_db)
 
-    deck = Deck(keyed_decklist, card_db)
-    # units_uniq, spells_uniq, power_uniq, total_cards_uniq =
-    # deck.count_unique()
-    units, spells, power, total_cards = deck.count()
+    DECKLIST = 'deck.csv'
+    CARD_DB = 'eternal-cards-1.31.json'
 
-    # print('You have %d cards in total' % (total_cards_uniq,))
-    # print('You have %d units' % (units_uniq,))
-    # print('You have %d spells' % (spells_uniq,))
-    # print('You have %d power cards' % (power_uniq, ))
+    # create deck from keyed_decklist
+    deck = Deck(DECKLIST, CARD_DB)
 
-    print('')
-    print('===============')
-    print('===============')
-    print('')
+    print(deck.deck_obj[0].name())
 
-    print('You have %d cards in total' % (total_cards,))
-    print('You have %d units' % (units,))
-    print('You have %d spells' % (spells,))
-    print('You have %d power cards' % (power,))
 
-    print('')
-    print('===============')
-    print('===============')
-    print('')
+    # card_type = 2
+    # card_index = 4
 
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
+    # print('You have', deck.deck[card_type][card_index][4],
+          # deck.deck[card_type][card_index][0])
+    # print('')
 
-    deck.subtract_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.subtract_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(0, 0)
-    print('Probabilty of drawing', deck.deck[0][0][0], 'is', deck.deck[0][0][5])
-    deck.add_card(2, 0)
-    print('Probabilty of drawing', deck.deck[2][0][0], 'is', deck.deck[2][0][5])
-
+    # deck.subtract_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
+    # deck.add_card(card_type, card_index)
+    # print('Probabilty of drawing', deck.deck[card_type][card_index][0], ':',
+          # '{0: .2f}'.format(deck.deck[card_type][card_index][5]), '%')
+    # print('')
 
 if __name__ == "__main__":
     main()

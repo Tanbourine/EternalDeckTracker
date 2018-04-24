@@ -79,12 +79,12 @@ def import_json(json_file):
     return parsed_json
 
 
+
 def import_deck(decklist):
     """ import csv file to array
         deck = {card_name : quantity}
         card_name = [card_names] """
-    card_names = []
-    deck = {}
+    deck = []
     with open(decklist, 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
 
@@ -101,13 +101,12 @@ def import_deck(decklist):
             name = card[0][2:find_paranthesis]
             name = name.strip()
 
-            card_names.append(name)
-            deck[name] = quantity
+            deck.append([name, quantity])
 
-    return deck, card_names
+    return deck
 
 
-def create_keyed_decklist(deck, card_names, card_db):
+def create_keyed_decklist(deck, card_db):
     """ takes decklist csv and returns list of corresponding keys and quantities
     in dict """
 
@@ -117,24 +116,25 @@ def create_keyed_decklist(deck, card_names, card_db):
     # make list of keys to link decklist and json
     for card in deck:
         for index, db_card in enumerate(card_db):
-            if card in db_card["Name"]:
+            if card[0] in db_card["Name"]:
                 deck_keys.append(index)
 
-    # make list of [card_key : quantity]
+    # make list of [card_key, quantity]
     # this is the new decklist since it can be used to retrieve all json data
     for index, card in enumerate(deck_keys):
-        keyed_decklist.append([card, deck[card_names[index]]])
+        keyed_decklist.append([card, deck[index][1]])
 
     return keyed_decklist
+
 
 def main():
     """ main function """
     # pylint: disable=unused-variable
     # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
     # Health, Rarity, Type, ImageUrl
-    deck, card_names = import_deck(DECKLIST)
+    deck = import_deck(DECKLIST)
     card_db = import_json(CARD_DB)
-    keyed_decklist = create_keyed_decklist(deck, card_names, card_db)
+    keyed_decklist = create_keyed_decklist(deck, card_db)
     # deck_obj = create_card_obj_deck(keyed_decklist, card_db)
     # for i in range(len(keyed_decklist)):
         # print(deck_obj[i].name())
