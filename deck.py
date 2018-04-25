@@ -299,61 +299,11 @@ def main():
     CARD_DB = 'eternal-cards-1.31.json'
 
     # create deck from keyed_decklist
-    deck = Deck(DECKLIST, CARD_DB)
+    mydeck = Deck(DECKLIST, CARD_DB)
+
+    print(mydeck.show_property('Name', 'Quantity'))
 
 
-    # print(deck.show_property('Name'))
-
-    card_type = 2
-    card_index = 3
-
-    print('You have', deck.deck[card_type][card_index].quantity,
-          deck.deck[card_type][card_index].name)
-    print('')
-
-
-
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-    deck.subtract_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
-
-    deck.add_card(card_type, card_index)
-    print('Probabilty of drawing', deck.deck[card_type][card_index].name, ':',
-          '{0: .2f}'.format(deck.deck[card_type][card_index].probability), '%')
-    print('')
 
 if __name__ == "__main__":
     main()
