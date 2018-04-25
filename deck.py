@@ -5,23 +5,22 @@
 import card as cd
 
 
-
 class Deck():
 
     """ deck object to self sort ALPHA, TYPE_alpha_cost, TYPE_cost_alpha, COST_alpha
         caps is major category, lower is tiebreakers
         returns list -> [name, type, cost, key, quantity]"""
-
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self, decklist_file, card_db_file):
 
         self.csv_deck = cd.import_deck(decklist_file)
         self.card_db = cd.import_json(card_db_file)
-        self.keyed_decklist = cd.create_keyed_decklist(self.csv_deck, self.card_db)
+        self.keyed_decklist = cd.create_keyed_decklist(
+            self.csv_deck, self.card_db)
 
         # create deck
         self.raw_deck = self.create_card_obj_deck()
-
 
         # default deck sorting is type_alpha
         self.sort_method = 'type_alpha'
@@ -80,7 +79,6 @@ class Deck():
         power_arr = []
         units_arr = []
 
-
         # organize by type
         for card in self.raw_deck:
             if card.card_type.lower(
@@ -93,7 +91,6 @@ class Deck():
 
             else:
                 units_arr.append(card)
-
 
         return units_arr, spells_arr, power_arr
 
@@ -166,8 +163,9 @@ class Deck():
 
         if self.deck[card_type][index].quantity > 0:
             self.deck[card_type][index].quantity -= 1
-            print("Subtracted", self.deck[card_type][index].name, ':', 'You have',
-                  self.deck[card_type][index].quantity, 'left')
+            print(
+                "Subtracted", self.deck[card_type][index].name, ':', 'You have',
+                self.deck[card_type][index].quantity, 'left')
 
         else:
             print("SUBTRACT_ERROR: Cannot have less than zero cards")
@@ -190,24 +188,28 @@ class Deck():
             # check how many lands are in original deck
             # to make sure cannot go more than max
 
-            if self.deck[card_type][index].name in ['Fire Sigil', 'Primal Sigil',
-                                                  'Shadow Sigil',
-                                                  'Justice Sigil', 'Time Sigil']:
+            if self.deck[
+                    card_type][index].name in ['Fire Sigil', 'Primal Sigil',
+                                               'Shadow Sigil',
+                                               'Justice Sigil', 'Time Sigil']:
 
                 # if current num of pwr cards is less than starting num of pwr
-                if self.deck[card_type][index].quantity < self.starting_power[self.deck[card_type][index].name]:
+                if self.deck[card_type][index].quantity < \
+                        self.starting_power[self.deck[card_type][index].name]:
                     self.deck[card_type][index].quantity += 1
                     print(
                         "Added", self.deck[card_type][
-                            index].name, ':', 'You have', self.deck[card_type][index].quantity, 'left')
+                            index].name, ':', 'You have',
+                        self.deck[card_type][index].quantity, 'left')
                 else:
                     print(
                         "ADD_ERROR: Cannot have more power cards than starting amount")
 
             elif self.deck[card_type][index].quantity < 4:
                 self.deck[card_type][index].quantity += 1
-                print("Added", self.deck[card_type][index].name, ':', 'You have',
-                      self.deck[card_type][index].quantity, 'left')
+                print(
+                    "Added", self.deck[card_type][index].name, ':', 'You have',
+                    self.deck[card_type][index].quantity, 'left')
 
             else:
                 print("ADD_ERROR: Cannot have more than 4 of the same cards")
@@ -239,7 +241,6 @@ class Deck():
                 merged_deck.append(card)
         return merged_deck
 
-
     def card_names(self):
         """ returns array of card names in index order """
         name_arr = []
@@ -250,11 +251,10 @@ class Deck():
         return name_arr
 
     def show_property(self, *args):
-        """ returns a list of whatever keys you input """ 
+        """ returns a list of whatever keys you input """
         # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
         # Health, Rarity, Type, ImageUrl
         output_arr = []
-
 
         for card in self.merge_types():
             properties = []
@@ -274,6 +274,7 @@ class Deck():
 
     def card_search(self, card_name):
         """ Given the name of a card, return a card object """
+        # pylint: disable=no-else-return
         found_card = 0
         for card_types in self.deck:
             for card in card_types:
@@ -285,24 +286,19 @@ class Deck():
         else:
             print('Card does not exist. Check spelling!')
             return None
-            
-
-
-
 
 
 def main():
     # pylint: disable=too-many-statements, unused-variable, too-many-locals
     """ main function """
 
-    DECKLIST = 'deck.csv'
-    CARD_DB = 'eternal-cards-1.31.json'
+    decklist = 'deck.csv'
+    card_db = 'eternal-cards-1.31.json'
 
     # create deck from keyed_decklist
-    mydeck = Deck(DECKLIST, CARD_DB)
+    mydeck = Deck(decklist, card_db)
 
     print(mydeck.show_property('Name', 'Quantity'))
-
 
 
 if __name__ == "__main__":

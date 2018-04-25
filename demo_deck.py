@@ -1,7 +1,6 @@
 """ testing importing """
-import deck as dk
-import card as cd
 import pprint
+import deck as dk
 
 DECKLIST = 'deck.csv'
 CARD_DB = 'eternal-cards-1.31.json'
@@ -9,7 +8,7 @@ CARD_DB = 'eternal-cards-1.31.json'
 
 def main():
     """ main """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements, line-too-long, invalid-name
 
     mydeck = dk.Deck(DECKLIST, CARD_DB)
 
@@ -30,49 +29,61 @@ def main():
     print('')
 
     print('Selected card is:', mydeck.deck[card_type][card_index].name)
-    print('Its cost is:',mydeck.deck[card_type][card_index].cost)
-    print('Its rarity is:',mydeck.deck[card_type][card_index].rarity)
-    print('Its influence requirement is:',mydeck.deck[card_type][card_index].influence)
-    print('You currently have', mydeck.deck[card_type][card_index].quantity, 'of', mydeck.deck[card_type][card_index].name)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its cost is:', mydeck.deck[card_type][card_index].cost)
+    print('Its rarity is:', mydeck.deck[card_type][card_index].rarity)
+    print('Its influence requirement is:',
+          mydeck.deck[card_type][card_index].influence)
+    print('You currently have', mydeck.deck[card_type][card_index].quantity,
+          'of', mydeck.deck[card_type][card_index].name)
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
 
     print('')
     mydeck.add_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.add_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.add_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.add_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.subtract_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.subtract_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.subtract_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.subtract_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     mydeck.subtract_card(card_type, card_index)
-    print('Its probability to draw in this deck is:', '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
+    print('Its probability to draw in this deck is:',
+          '{0: .2f}'.format(mydeck.deck[card_type][card_index].probability))
 
     print('')
     print('')
@@ -86,9 +97,8 @@ def main():
     # Health, Rarity, Type, ImageUrl, Quantity*, Probability*
     # *is custom!
     pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(mydeck.show_property('Name', 'Quantity', 'Cost', 'Rarity', 'Type', 'Probability'))
-
-
+    pp.pprint(mydeck.show_property(
+        'Name', 'Quantity', 'Cost', 'Rarity', 'Type', 'Probability'))
 
 
 if __name__ == "__main__":

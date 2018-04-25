@@ -13,6 +13,8 @@ class Card():
     # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
     # Health, Rarity, Type, ImageUrl
 
+    # pylint: disable=too-many-instance-attributes, too-few-public-methods
+
     def __init__(self, card_key, card_db):
         self.card_key = card_key
         self.card_db = card_db
@@ -32,13 +34,11 @@ class Card():
         self.imageurl = self.card_data["ImageUrl"]
 
 
-
 def import_json(json_file):
     """ takes in json and outputs a dictionary """
     with open(json_file) as jsonfile:
         parsed_json = json.load(jsonfile)
     return parsed_json
-
 
 
 def import_deck(decklist):
