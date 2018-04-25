@@ -1,0 +1,45 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.cs     text diff=csharp
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.sql    text
+
+*.csproj text merge=union
+*.sln    text merge=union eol=crlf
+
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+
+# absolute paths are ok, as are globs
+/**/postinst* text eol=lf
+
+# paths that don't start with / are treated relative to the .gitattributes folder
+relative/path/*.txt text eol=lf
+
+# Basic .gitattributes for a python repo.
+
+# Source files
+# ============
+*.pxd       text
+*.py        text
+*.py3       text
+*.pyw       text
+*.pyx       text
+
+# Binary files
+# ============
+*.db        binary
+*.p         binary
+*.pkl       binary
+*.pyc       binary
+*.pyd       binary
+*.pyo       binary
+
+# Note: .db, .p, and .pkl files are associated
+# with the python modules ``pickle``, ``dbm.*``,
+# ``shelve``, ``marshal``, ``anydbm``, & ``bsddb``
+# (among others).
