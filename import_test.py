@@ -69,10 +69,11 @@ def main():
     print('')
     print('')
 
-    # keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
-    # Health, Rarity, Type, ImageUrl
+    # JSON Keywords -> SetNumber, EternalID, Name, CardText, Cost, Influence, Attack,
+    # Health, Rarity, Type, ImageUrl, Quantity*, Probability*
+    # *is custom!
     pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(deck.show_property('Name', 'Cost', 'Rarity', 'Type'))
+    pp.pprint(deck.show_property('Name', 'Quantity', 'Cost', 'Rarity', 'Type', 'Probability'))
 
 
 

@@ -255,10 +255,18 @@ class Deck():
         # Health, Rarity, Type, ImageUrl
         output_arr = []
 
+
         for card in self.merge_types():
             properties = []
             for keys in args:
-                properties.append(card.card_data[keys])
+                if keys == 'Quantity':
+                    properties.append(card.quantity)
+
+                elif keys == 'Probability':
+                    properties.append(card.probability)
+
+                else:
+                    properties.append(card.card_data[keys])
 
             output_arr.append(properties)
 
