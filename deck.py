@@ -51,8 +51,6 @@ class Deck():
 
         return starting_power
 
-
-
     def cost_alpha(self):  # pylint: disable=no-self-use
         """ comes as is from eternal """
         cost_alpha_arr = sorted(self.raw_deck, key=lambda x: x.cost)
@@ -265,6 +263,21 @@ class Deck():
             output_arr.append(properties)
 
         return output_arr
+
+    def card_search(self, card_name):
+        """ Given the name of a card, return a card object """
+        found_card = 0
+        for card_types in self.deck:
+            for card in card_types:
+                if card.name == card_name:
+                    found_card = card
+        if found_card:
+            return found_card
+
+        else:
+            print('Card does not exist. Check spelling!')
+            return None
+            
 
 
 
