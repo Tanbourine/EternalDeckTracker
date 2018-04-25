@@ -5,7 +5,9 @@ import tkinter as tk
 
 
 class App(tk.Tk):
+
     """ master app """
+
     def __init__(self):
 
         # Initialize tk inheritance
@@ -14,33 +16,33 @@ class App(tk.Tk):
         self.geometry("450x700+300+300")
         self.resizable(width=True, height=True)
 
-class Window_1(tk.Frame):  # pylint: disable=too-many-ancestors
+
+class Window_One(tk.Frame):  # pylint: disable=too-many-ancestors
 
     """ first app """
 
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self.grid(row=0, column=0)
-        tk.Button(self, text=deck.deck[0][0].name).pack()
-        # tk.Button(self, text="This is my first GUI").pack()
+        self.grid(row=0, column=0, sticky=tk.W, padx=4)
+        tk.Button(self, text=deck.deck[0][0].name).grid(row=0, column=0)
 
-class Window_2(tk.Frame): # pylint: disable=too-many-ancestors
+
+class Window_Two(tk.Frame):  # pylint: disable=too-many-ancestors
+
     """ window 2 """
 
     def __init__(self, master):
         tk.Frame.__init__(self, master)
-        self.grid(row=0, column=1)
-        tk.Label(self, text="This is my second GUI").pack()
-        
+        self.grid(row=1, column=0)
+        tk.Label(self, text="This is my second GUI").grid(row=1, column=0)
 
 
 def main(deck):
     """ main function """
-    print(deck.show_property('Name'))
     app = App()
 
-    window_1 = Window_1(app)
-    window_2 = Window_2(app)
+    window_1 = Window_One(app)
+    window_2 = Window_Two(app)
     app.mainloop()
 
 
@@ -50,4 +52,3 @@ if __name__ == "__main__":
     CARD_DB = 'eternal-cards-1.31.json'
     deck = dk.Deck(DECKLIST, CARD_DB)
     main(deck)
-
