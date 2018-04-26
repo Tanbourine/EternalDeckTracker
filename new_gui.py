@@ -42,21 +42,38 @@ class MainApplication(tk.Frame):
         self.spells_display = CardDisplays(self, self.mydeck, 'spells')
         self.spells_display.grid(row=1, column=0, padx=padx, pady=pady)
 
-        self.units_display = CardDisplays(self, self.mydeck, 'power')
-        self.units_display.grid(row=2, column=0, padx=padx, pady=pady)
+        self.power_display = CardDisplays(self, self.mydeck, 'power')
+        self.power_display.grid(row=2, column=0, padx=padx, pady=pady)
+
+    def update_all_probability(self):
+        """ calls update_probability on all obj """
+        self.units_display.update_probability()
+        self.spells_display.update_probability()
+        self.power_display.update_probability()
 
 
-class CardDisplays(tk.Frame):  # pylint: disable=too-many-ancestors
-
+class CardDisplays(tk.Frame):
     """ Frame for spells """
+    # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
     def __init__(self, master, mydeck, display, **kwargs):
         tk.Frame.__init__(self, master, **kwargs)
 
         self.master = master
         self.mydeck = mydeck
-        self.display = display
         self.grid(row=0, column=0, sticky=tk.E+tk.W)
+
+        if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
+            self.disp_type = 0
+            self.section_label = 'Units'
+
+        elif display.lower() in ['spell', 'spells', 'magic', '1', 1]:
+            self.disp_type = 1
+            self.section_label = 'Spells'
+
+        elif display.lower() in ['power', 'power', 'land', 'sigil', 'sigils', '2', 2]:
+            self.disp_type = 2
+            self.section_label = 'Power'
         self.create_buttons()
 
     def create_buttons(self):
@@ -72,33 +89,20 @@ class CardDisplays(tk.Frame):  # pylint: disable=too-many-ancestors
         padx = 5
         pady = 5
 
-        card_name_button = []
-        card_name_str = []
+        self.card_name_button = []
+        self.card_name_str = []
 
-        card_quantity_button = []
-        card_quantity_str = []
+        self.card_quantity_button = []
+        self.card_quantity_str = []
 
-        card_prob_button = []
-        card_prob_str = []
-
-        if self.display.lower() in ['unit', 'units', '0', 'monsters', 0]:
-            disp_type = 0
-            section_label = 'Units'
-
-        elif self.display.lower() in ['spell', 'spells', 'magic', '1', 1]:
-            disp_type = 1
-            section_label = 'Spells'
-
-        elif self.display.lower() in ['power', 'power', 'land', 'sigil',
-                                      'sigils', '2', 2]:
-            disp_type = 2
-            section_label = 'Power'
+        self.card_prob_button = []
+        self.card_prob_str = []
 
         # creating section title
-        section_label_obj = tk.Label(self, text=section_label, back=b_bg)
-        section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
-                               ipady=ipady, padx=padx, pady=pady,
-                               sticky=tk.E+tk.W)
+        self.section_label_obj = tk.Label(
+            self, text=self.section_label, back=b_bg)
+        self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
+                                    ipady=ipady, padx=padx, pady=pady, sticky=tk.E+tk.W)
 
         # creating column labels
         tk.Label(self, text='Probability', width=l_width,
@@ -113,33 +117,55 @@ class CardDisplays(tk.Frame):  # pylint: disable=too-many-ancestors
                  background=b_bg).grid(row=1, column=2, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady)
 
-        for i, card in enumerate(self.mydeck.deck[disp_type]):
+        for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
-            card_prob_str.append(tk.StringVar())
-            card_prob_str[i].set('{0:0.2f}'.format(card.probability))
-            card_prob_button.append(
-                tk.Button(self, textvariable=card_prob_str[i], width=l_width,
-                          height=b_height, background=b_bg))
-            card_prob_button[i].grid(row=i+2, column=0, sticky=tk.E+tk.W)
+            self.card_prob_str.append(tk.StringVar())
+            self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
+            self.card_prob_button.append(
+                tk.Button(self, textvariable=self.card_prob_str[i],
+                          width=l_width, height=b_height, background=b_bg))
+            self.card_prob_button[i].grid(row=i+2, column=0, sticky=tk.E+tk.W)
 
-            card_name_str.append(tk.StringVar())
-            card_name_str[i].set(card.name)
-            card_name_button.append(
-                tk.Button(self, textvariable=card_name_str[i], width=b_width,
-                          height=b_height, background=b_bg))
-            card_name_button[i].grid(row=i+2, column=1, sticky=tk.E+tk.W)
+            self.card_name_str.append(tk.StringVar())
+            self.card_name_str[i].set(card.name)
+            self.card_name_button.append(
+                tk.Button(self, textvariable=self.card_name_str[i],
+                          width=l_width, height=b_height, background=b_bg,
+                          command=lambda i=i: self.subtract_card(self.disp_type, i)))
+            self.card_name_button[i].grid(row=i+2, column=1, sticky=tk.E+tk.W)
 
-            card_quantity_str.append(tk.StringVar())
-            card_quantity_str[i].set(card.quantity)
-            card_quantity_button.append(
-                tk.Button(self, textvariable=card_quantity_str[i],
-                          width=q_width, height=b_height, background=b_bg))
-            card_quantity_button[i].grid(
+            self.card_quantity_str.append(tk.StringVar())
+            self.card_quantity_str[i].set(card.quantity)
+            self.card_quantity_button.append(
+                tk.Button(self, textvariable=self.card_quantity_str[i],
+                          width=l_width, height=b_height, background=b_bg,
+                          command=lambda i=i: self.add_card(self.disp_type, i)))
+            self.card_quantity_button[i].grid(
                 row=i+2, column=2, sticky=tk.E+tk.W)
 
     def add_card(self, card_type, index):
         """ add card and updating tk StringVar """
         self.mydeck.add_card(card_type, index)
+
+        self.card_quantity_str[index].set(
+            self.mydeck.deck[card_type][index].quantity)
+
+        self.update_probability()
+
+    def subtract_card(self, card_type, index):
+        """ add card and updating tk StringVar """
+        self.mydeck.subtract_card(card_type, index)
+
+        self.card_quantity_str[index].set(
+            self.mydeck.deck[card_type][index].quantity)
+
+        self.update_probability()
+
+    def update_probability(self):
+        """ updates probability column """
+
+        for i, card in enumerate(self.mydeck.deck[self.disp_type]):
+            self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
 
 
 def main():
