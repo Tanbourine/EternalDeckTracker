@@ -3,9 +3,11 @@
 try:
     # python 3.x
     import tkinter as tk
+    import tkinter.font as font
 except ImportError:
     # python 2.x
     import Tkinter as tk
+    import tkFont as font
 # from tkinter import ttk
 
 # https://stackoverflow.com/questions/47306956/inheritance-from-tkinter-frame-in-varying-implementations?rq=1&utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
@@ -33,8 +35,8 @@ class MainApplication(tk.Frame):
 
     def create_widgets(self):
         """ initalizes widgets """
-        padx = 10
-        pady = 20
+        padx = 7
+        pady = 10
 
         self.units_display = CardDisplays(self, self.mydeck, 'units')
         self.units_display.grid(row=0, column=0, padx=padx, pady=pady)
@@ -79,11 +81,12 @@ class CardDisplays(tk.Frame):
     def create_buttons(self):
         """ create buttons """
         # pylint: disable=too-many-locals
+        gui_font = font.Font(family='Helvetica', size=8)
         b_width = 20
         b_bg = '#626262'
         l_width = 6
         q_width = 3
-        b_height = 1
+        b_height = 0
         ipadx = 30
         ipady = 10
         padx = 5
@@ -98,23 +101,24 @@ class CardDisplays(tk.Frame):
         self.card_prob_button = []
         self.card_prob_str = []
 
+
         # creating section title
         self.section_label_obj = tk.Label(
-            self, text=self.section_label, back=b_bg)
+            self, text=self.section_label, back=b_bg, font=gui_font)
         self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky=tk.E+tk.W)
 
         # creating column labels
         tk.Label(self, text='Probability', width=l_width,
-                 background=b_bg).grid(row=1, column=0, ipadx=ipadx,
+                 background=b_bg, font=gui_font).grid(row=1, column=0, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady)
 
         tk.Label(self, text='Name', width=b_width,
-                 background=b_bg).grid(row=1, column=1, ipadx=ipadx,
+                 background=b_bg, font=gui_font).grid(row=1, column=1, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady)
 
         tk.Label(self, text='Quantity', width=q_width,
-                 background=b_bg).grid(row=1, column=2, ipadx=ipadx,
+                 background=b_bg, font=gui_font).grid(row=1, column=2, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady)
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
@@ -123,7 +127,7 @@ class CardDisplays(tk.Frame):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
             self.card_prob_button.append(
                 tk.Button(self, textvariable=self.card_prob_str[i],
-                          width=l_width, height=b_height, background=b_bg))
+                          width=l_width, height=b_height, background=b_bg, font=gui_font))
             self.card_prob_button[i].grid(row=i+2, column=0, sticky=tk.E+tk.W)
 
             self.card_name_str.append(tk.StringVar())
@@ -131,7 +135,7 @@ class CardDisplays(tk.Frame):
             self.card_name_button.append(
                 tk.Button(self, textvariable=self.card_name_str[i],
                           width=l_width, height=b_height, background=b_bg,
-                          command=lambda i=i: self.subtract_card(self.disp_type, i)))
+                          command=lambda i=i: self.subtract_card(self.disp_type, i), font=gui_font))
             self.card_name_button[i].grid(row=i+2, column=1, sticky=tk.E+tk.W)
 
             self.card_quantity_str.append(tk.StringVar())
@@ -139,7 +143,7 @@ class CardDisplays(tk.Frame):
             self.card_quantity_button.append(
                 tk.Button(self, textvariable=self.card_quantity_str[i],
                           width=l_width, height=b_height, background=b_bg,
-                          command=lambda i=i: self.add_card(self.disp_type, i)))
+                          command=lambda i=i: self.add_card(self.disp_type, i), font=gui_font))
             self.card_quantity_button[i].grid(
                 row=i+2, column=2, sticky=tk.E+tk.W)
 
