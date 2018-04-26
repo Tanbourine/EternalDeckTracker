@@ -1,5 +1,5 @@
 """ GUI application for Eternal Deck Tracker (EDT) """
-
+# pylint: disable=invalid-name
 try:
     # python 3.x
     import tkinter as tk
