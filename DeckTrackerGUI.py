@@ -150,7 +150,7 @@ class CardDisplays(tk.Frame):
         self.card_quantity_str[index].set(
             self.mydeck.deck[card_type][index].quantity)
 
-        self.update_probability()
+        app.update_all_probability()
 
     def subtract_card(self, card_type, index):
         """ add card and updating tk StringVar """
@@ -159,7 +159,7 @@ class CardDisplays(tk.Frame):
         self.card_quantity_str[index].set(
             self.mydeck.deck[card_type][index].quantity)
 
-        self.update_probability()
+        app.update_all_probability()
 
     def update_probability(self):
         """ updates probability column """
@@ -168,10 +168,12 @@ class CardDisplays(tk.Frame):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
 
 
-def main():
+def main(decklist, card_db):
     """ main function """
-    decklist = 'deck.csv'
-    card_db = 'eternal-cards-1.31.json'
+    # pylint: disable = global-variable-undefined, invalid-name
+    import deck as dk
+    global app
+
     mydeck = dk.Deck(decklist, card_db)
 
     root = tk.Tk()
@@ -181,5 +183,6 @@ def main():
 
 
 if __name__ == "__main__":
-    import deck as dk
-    main()
+    DECKLIST = 'deck.csv'
+    CARD_DB = 'eternal-cards-1.31.json'
+    main(DECKLIST, CARD_DB)
