@@ -226,8 +226,11 @@ class Deck():
 
         for card_type in self.deck:
             for card in card_type:
-                probability = card.quantity / card_count[3]
-                card.probability = probability * 100
+                if card_count[3] != 0:
+                    probability = card.quantity / card_count[3]
+                    card.probability = probability * 100
+                else:
+                    print('PROB ERROR: Cannot divide by zero')
 
     def merge_types(self):
         """ merges the three type sections into one large array """
