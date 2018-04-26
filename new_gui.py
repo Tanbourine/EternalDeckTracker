@@ -29,7 +29,7 @@ class MainApplication(tk.Frame):
         """ configure gui settings """
         self.master.title("Eternal Deck Tracker")
         # self.master.geometry("450x700")
-        self.master.resizable(width=True, height=True)
+        self.master.resizable(width=False, height=False)
 
     def create_widgets(self):
         """ initalizes widgets """
@@ -49,9 +49,53 @@ class SpellsWindow(tk.Frame):  # pylint: disable=too-many-ancestors
 
     def create_buttons(self):
         """ create buttons """
+        b_width = 30
+        b_bg = '#626262'
+        l_width = 6
+        q_width = 3
+        b_height = 1
+        ipadx = 15
+        ipady = 5
+
+        card_name_button = []
+        card_name_str = []
+
+        card_quantity_button = []
+        card_quantity_str = []
+
+        card_prob_button = []
+        card_prob_str = []
+        
+        for i, card in enumerate(mydeck.deck[1]):
+
+            card_prob_str.append(tk.StringVar())
+            card_prob_str[i].set('{0:0.2f}'.format(card.probability))
+            card_prob_button.append(
+                    tk.Button(self, textvariable=card_prob_str[i], width=l_width, height=b_height, background=b_bg))
+            card_prob_button[i].grid(row=i, column=0, sticky=tk.E+tk.W)
+
+            card_name_str.append(tk.StringVar())
+            card_name_str[i].set(card.name)
+            card_name_button.append(
+                    tk.Button(self, textvariable=card_name_str[i], width=b_width, height=b_height, background=b_bg))
+            card_name_button[i].grid(row=i, column=1, sticky=tk.E+tk.W)
+
+            card_quantity_str.append(tk.StringVar())
+            card_quantity_str[i].set(card.quantity)
+            card_quantity_button.append(
+                    tk.Button(self, textvariable=card_quantity_str[i], width=q_width, height=b_height, background=b_bg))
+            card_quantity_button[i].grid(row=i, column=2, sticky=tk.E+tk.W)
+
+    def add_card(card_type, index):
+        """ add card and updating tk StringVar """
+        mydeck.add_card(card_type, index)
+        
 
 
-        tk.Button(self, text=mydeck.deck[0][0].name).grid(row=0, column=0, padx=20, pady=20, ipadx=5, ipady=5)
+
+
+        
+    # tk.Button(self, text=mydeck.deck[0][0].name).grid(row=0, column=0, padx=20, pady=20, ipadx=5, ipady=5)
 
 
 class Window_Two(tk.Frame):  # pylint: disable=too-many-ancestors
