@@ -37,7 +37,7 @@ class MainApplication(tk.Frame):
             tk.Grid.columnconfigure(self, i, weight=1)
 
     def myfunction(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=500,height=1000)
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=450,height=1000)
 
     def create_widgets(self):
         """ initalizes widgets """
@@ -46,11 +46,11 @@ class MainApplication(tk.Frame):
 
         self.canvas = tk.Canvas(self)
         myframe = tk.Frame(self.canvas)
-        myscrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        myscrollbar = tk.Scrollbar(myframe, orient="vertical", command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=myscrollbar.set)
 
-        myscrollbar.grid(row=0, column=1, rowspan=3, sticky=tk.N+tk.S+tk.E)
-        self.canvas.grid(rowspan=4)
+        myscrollbar.grid(row=0, column=1, rowspan=4, sticky=tk.N+tk.S+tk.E)
+        self.canvas.grid()
         self.canvas.create_window((0,0),window=myframe,anchor='nw')
         myframe.bind("<Configure>", self.myfunction)
 
