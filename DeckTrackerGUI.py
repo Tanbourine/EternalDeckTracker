@@ -15,11 +15,10 @@ except ImportError:
 class MainApplication(tk.Frame):
 
     """ master app """
-    # pylint: disable = too-many-ancestors
+    # pylint: disable = too-many-ancestors, too-many-instance-attributes
 
     def __init__(self, master, mydeck):
         tk.Frame.__init__(self, master)
-
 
         self.master = master
         self.mydeck = mydeck
@@ -36,8 +35,9 @@ class MainApplication(tk.Frame):
             tk.Grid.rowconfigure(self, i, weight=1)
             tk.Grid.columnconfigure(self, i, weight=1)
 
-    def myfunction(self, event):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=450,height=1000)
+    def configure_canvas(self, event):  #pylint:disable=unused-argument
+        """ configure canvas size"""
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=500, height=750)
 
     def create_widgets(self):
         """ initalizes widgets """
@@ -51,23 +51,22 @@ class MainApplication(tk.Frame):
 
         myscrollbar.grid(row=0, column=1, rowspan=4, sticky=tk.N+tk.S+tk.E)
         self.canvas.grid()
-        self.canvas.create_window((0,0),window=myframe,anchor='nw')
-        myframe.bind("<Configure>", self.myfunction)
+        self.canvas.create_window((0, 0), window=myframe, anchor='nw')
+        myframe.bind("<Configure>", self.configure_canvas)
 
         self.cards_left = tk.StringVar()
         self.cards_left.set('You have ' + str(self.mydeck.count()[3]) + ' cards left!')
-        self.card_count = tk.Label(myframe,  textvariable=self.cards_left)
+        self.card_count = tk.Label(myframe, textvariable=self.cards_left)
         self.card_count.grid(row=3, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.units_display = CardDisplays(myframe,  self.mydeck, 'units')
+        self.units_display = CardDisplays(myframe, self.mydeck, 'units')
         self.units_display.grid(row=0, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.spells_display = CardDisplays(myframe,  self.mydeck, 'spells')
+        self.spells_display = CardDisplays(myframe, self.mydeck, 'spells')
         self.spells_display.grid(row=1, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.power_display = CardDisplays(myframe,  self.mydeck, 'power')
+        self.power_display = CardDisplays(myframe, self.mydeck, 'power')
         self.power_display.grid(row=2, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
-
 
     def update_all_probability(self):
         """ calls update_probability on all obj """
@@ -82,7 +81,7 @@ class CardDisplays(tk.Frame):
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
     def __init__(self, master, mydeck, display, **kwargs):
-        tk.Frame.__init__(self, master, bg='#626262',**kwargs)
+        tk.Frame.__init__(self, master, bg='#626262', **kwargs)
 
         self.master = master
         self.mydeck = mydeck
@@ -112,13 +111,13 @@ class CardDisplays(tk.Frame):
         """ create buttons """
         # pylint: disable=too-many-locals
         font_family = 'Helvetica'
-        gui_font = font.Font(family=font_family, size=8)
-        title_font = font.Font(family=font_family, size=12, weight=font.BOLD) 
-        b_width = 20
+        gui_font = font.Font(family=font_family, size=12)
+        title_font = font.Font(family=font_family, size=20, weight=font.BOLD)
         b_bg = '#626262'
-        l_width = 6
-        q_width = 3
-        b_height = 0
+        # b_width = 20
+        # l_width = 6
+        # q_width = 3
+        # b_height = 0
         ipadx = 20
         ipady = 3
         padx = 0
@@ -133,7 +132,6 @@ class CardDisplays(tk.Frame):
         self.card_prob_button = []
         self.card_prob_str = []
 
-
         # creating section title
         self.section_label_obj = tk.Label(
             self, text=self.section_label, background=b_bg, font=title_font)
@@ -141,18 +139,20 @@ class CardDisplays(tk.Frame):
                                     ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
         # creating column labels
-        tk.Label(self, text='Probability', 
+        tk.Label(self, text='Probability',
                  background=b_bg, font=gui_font).grid(row=1, column=0, ipadx=ipadx,
-                                       ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
+                                                      ipady=ipady, padx=padx, pady=pady,
+                                                      sticky=tk.N+tk.S+tk.E+tk.W)
 
-        tk.Label(self, text='Name', 
+        tk.Label(self, text='Name',
                  background=b_bg, font=gui_font).grid(row=1, column=1, ipadx=ipadx,
-                                       ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
+                                                      ipady=ipady, padx=padx, pady=pady,
+                                                      sticky=tk.N+tk.S+tk.E+tk.W)
 
         tk.Label(self, text='Quantity',
                  background=b_bg, font=gui_font).grid(row=1, column=2, ipadx=ipadx,
-                                       ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
-
+                                                      ipady=ipady, padx=padx, pady=pady,
+                                                      sticky=tk.N+tk.S+tk.E+tk.W)
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
@@ -203,8 +203,6 @@ class CardDisplays(tk.Frame):
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
-
-
 
 
 def main(decklist, card_db):
