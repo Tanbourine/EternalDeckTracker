@@ -4,7 +4,7 @@ try:
     # python 3.x
     import tkinter as tk
     import tkinter.font as font
-    from tkinter import ttk
+    # from tkinter import ttk
 
 except ImportError:
     # python 2.x
@@ -96,6 +96,8 @@ class CardDisplays(tk.Frame):
         self.grid_columnconfigure(1, weight=3, minsize=full_size)
         self.grid_columnconfigure(2, weight=1, minsize=half_size)
 
+        self.update_text_color()
+
         self.create_buttons()
 
     def create_buttons(self):
@@ -144,41 +146,12 @@ class CardDisplays(tk.Frame):
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
-            num_colors = 0
-
-            for influence in card.influence.lower():
-                if influence == 'p':
-                    text_color = 'navy'
-                    num_colors += 1
-
-                elif influence == 's':
-                    text_color = 'purple'
-                    num_colors += 1
-
-                elif influence == 'f':
-                    text_color = 'red'
-                    num_colors += 1
-
-                elif influence == 'j':
-                    text_color = 'forest green'
-                    num_colors += 1
-
-                elif influence == 't':
-                    text_color = 'gold'
-                    num_colors += 1
-
-                else:
-                    text_color = 'black'
-
-                if num_colors > 1:
-                    text_color = 'gray18'
-
             # create probability button
             self.card_prob_str.append(tk.StringVar())
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
             self.card_prob_button.append(
                 tk.Button(self, textvariable=self.card_prob_str[i], background=b_bg, font=gui_font,
-                          foreground=text_color))
+                          foreground=self.text_colors[i]))
             self.card_prob_button[i].grid(row=i+2, column=0, sticky='NSEW')
 
             # create name button
@@ -186,7 +159,8 @@ class CardDisplays(tk.Frame):
             self.card_name_str[i].set(card.name)
             self.card_name_button.append(
                 tk.Button(self, textvariable=self.card_name_str[i], background=b_bg,
-                          command=lambda i=i: self.subtract_card(self.disp_type, i), font=gui_font, foreground=text_color))
+                          command=lambda i=i: self.subtract_card(self.disp_type, i), font=gui_font,
+                          foreground=self.text_colors[i]))
             self.card_name_button[i].grid(row=i+2, column=1, sticky='NSEW')
 
             # create quantity button
@@ -194,7 +168,8 @@ class CardDisplays(tk.Frame):
             self.card_quantity_str[i].set(card.quantity)
             self.card_quantity_button.append(
                 tk.Button(self, textvariable=self.card_quantity_str[i], background=b_bg,
-                          command=lambda i=i: self.add_card(self.disp_type, i), font=gui_font, foreground=text_color))
+                          command=lambda i=i: self.add_card(self.disp_type, i), font=gui_font,
+                          foreground=self.text_colors[i]))
             self.card_quantity_button[i].grid(
                 row=i+2, column=2, sticky='NSEW')
 
@@ -221,6 +196,55 @@ class CardDisplays(tk.Frame):
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
+
+    def update_text_color(self):
+        """ reads card influence and returns card text color """
+        text_colors = []
+        color_instance = ''
+
+        for card_type in self.mydeck.deck:
+            for card in card_type:
+                influence_list = ''
+                num_colors = 0
+                for influence in card.influence.upper():
+                    if influence in ['F', 'S', 'J', 'P', 'T']:
+                        influence_list += influence
+
+                color_instance = 'black'
+
+                if 'P' in influence_list:
+                    color_instance = 'navy'
+                    if color_instance != 'navy':
+                        num_colors += 1
+
+                if 'S' in influence_list:
+                    color_instance = 'purple'
+                    if color_instance != 'purple':
+                        num_colors += 1
+
+                if 'F' in influence_list:
+                    color_instance = 'red'
+                    if color_instance != 'red':
+                        num_colors += 1
+
+                if 'J' in influence_list:
+                    color_instance = 'forest green'
+                    if color_instance != 'forest green':
+                        num_colors += 1
+
+                if 'T' in influence_list:
+                    color_instance = 'gold'
+                    if color_instance != 'gold':
+                        num_colors += 1
+
+                if num_colors > 1:
+                    color_instance = 'pink'
+                    text_colors.append(color_instance)
+                else:
+                    text_colors.append(color_instance)
+
+        self.text_colors = text_colors
+        return text_colors
 
 
 def main(decklist, card_db):
