@@ -43,16 +43,16 @@ class MainApplication(tk.Frame):
 
         self.cards_left = tk.StringVar()
         self.cards_left.set('You have ' + str(self.mydeck.count()[3]) + ' cards left!')
-        self.card_count = tk.Label(textvariable=self.cards_left)
+        self.card_count = tk.Label(self, textvariable=self.cards_left)
         self.card_count.grid(row=3, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.units_display = CardDisplays(self, self.mydeck, 'units', self.cards_left)
+        self.units_display = CardDisplays(self, self.mydeck, 'units')
         self.units_display.grid(row=0, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.spells_display = CardDisplays(self, self.mydeck, 'spells', self.cards_left)
+        self.spells_display = CardDisplays(self, self.mydeck, 'spells')
         self.spells_display.grid(row=1, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.power_display = CardDisplays(self, self.mydeck, 'power', self.cards_left)
+        self.power_display = CardDisplays(self, self.mydeck, 'power')
         self.power_display.grid(row=2, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
 
@@ -61,19 +61,18 @@ class MainApplication(tk.Frame):
         self.units_display.update_probability()
         self.spells_display.update_probability()
         self.power_display.update_probability()
+        self.cards_left.set('You have ' + str(self.mydeck.count()[3]) + ' cards left!')
 
 
 class CardDisplays(tk.Frame):
     """ Frame for spells """
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
-    def __init__(self, master, mydeck, display, cards_left, **kwargs):
+    def __init__(self, master, mydeck, display, **kwargs):
         tk.Frame.__init__(self, master, bg='#626262',**kwargs)
 
         self.master = master
         self.mydeck = mydeck
-        self.cards_left = cards_left
-        self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.W+tk.E)
 
         if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
             self.disp_type = 0
@@ -91,7 +90,7 @@ class CardDisplays(tk.Frame):
             tk.Grid.rowconfigure(self, i, weight=1)
 
         tk.Grid.columnconfigure(self, 0, weight=1)
-        tk.Grid.columnconfigure(self, 1, weight=3)
+        tk.Grid.columnconfigure(self, 1, weight=1)
         tk.Grid.columnconfigure(self, 2, weight=1)
 
         self.create_buttons()
@@ -124,20 +123,20 @@ class CardDisplays(tk.Frame):
 
         # creating section title
         self.section_label_obj = tk.Label(
-            self, text=self.section_label, back=b_bg, font=title_font)
+            self, text=self.section_label, background=b_bg, font=title_font)
         self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
         # creating column labels
-        tk.Label(self, text='Probability', width=l_width,
+        tk.Label(self, text='Probability', 
                  background=b_bg, font=gui_font).grid(row=1, column=0, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        tk.Label(self, text='Name', width=b_width,
+        tk.Label(self, text='Name', 
                  background=b_bg, font=gui_font).grid(row=1, column=1, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        tk.Label(self, text='Quantity', width=q_width,
+        tk.Label(self, text='Quantity',
                  background=b_bg, font=gui_font).grid(row=1, column=2, ipadx=ipadx,
                                        ipady=ipady, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
@@ -192,7 +191,6 @@ class CardDisplays(tk.Frame):
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
 
-        self.cards_left.set('You have ' + str(self.mydeck.count()[3]) + ' cards left!')
 
 
 
@@ -211,7 +209,6 @@ def main(decklist, card_db):
     tk.Grid.columnconfigure(root, 0, weight=1)
 
     app.grid(sticky=tk.N+tk.S+tk.E+tk.W)
-    # app.pack(fill="both", expand=True)
     app.mainloop()
 
 
