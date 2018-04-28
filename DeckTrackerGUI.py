@@ -12,7 +12,6 @@ except ImportError:
 # from tkinter import ttk
 
 
-
 class MainApplication(tk.Frame):
 
     """ master app """
@@ -20,6 +19,7 @@ class MainApplication(tk.Frame):
 
     def __init__(self, master, mydeck):
         tk.Frame.__init__(self, master)
+
 
         self.master = master
         self.mydeck = mydeck
@@ -36,23 +36,36 @@ class MainApplication(tk.Frame):
             tk.Grid.rowconfigure(self, i, weight=1)
             tk.Grid.columnconfigure(self, i, weight=1)
 
+    def myfunction(self, event):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"), width=500,height=1000)
+
     def create_widgets(self):
         """ initalizes widgets """
         padx = 10
         pady = 10
 
+        self.canvas = tk.Canvas(self)
+        myframe = tk.Frame(self.canvas)
+        myscrollbar = tk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=myscrollbar.set)
+
+        myscrollbar.grid(row=0, column=1, rowspan=3, sticky=tk.N+tk.S+tk.E)
+        self.canvas.grid(rowspan=4)
+        self.canvas.create_window((0,0),window=myframe,anchor='nw')
+        myframe.bind("<Configure>", self.myfunction)
+
         self.cards_left = tk.StringVar()
         self.cards_left.set('You have ' + str(self.mydeck.count()[3]) + ' cards left!')
-        self.card_count = tk.Label(self, textvariable=self.cards_left)
+        self.card_count = tk.Label(myframe,  textvariable=self.cards_left)
         self.card_count.grid(row=3, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.units_display = CardDisplays(self, self.mydeck, 'units')
+        self.units_display = CardDisplays(myframe,  self.mydeck, 'units')
         self.units_display.grid(row=0, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.spells_display = CardDisplays(self, self.mydeck, 'spells')
+        self.spells_display = CardDisplays(myframe,  self.mydeck, 'spells')
         self.spells_display.grid(row=1, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
-        self.power_display = CardDisplays(self, self.mydeck, 'power')
+        self.power_display = CardDisplays(myframe,  self.mydeck, 'power')
         self.power_display.grid(row=2, column=0, padx=padx, pady=pady, sticky=tk.N+tk.S+tk.E+tk.W)
 
 
