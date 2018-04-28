@@ -39,7 +39,9 @@ class MainApplication(tk.Frame):
         text_font = font.Font(family=font_family, size=12)
         title_font = font.Font(family=font_family, size=18, weight=font.BOLD)
 
-        self.gui_fonts = [text_font, title_font]
+        bg_color = '#626262'
+
+        self.gui_disp_options = [text_font, title_font, bg_color]
 
     def create_widgets(self):
         """ initalizes widgets """
@@ -54,27 +56,27 @@ class MainApplication(tk.Frame):
         self.cards_left.set(
             'You have ' + str(self.mydeck.count()[3]) + ' cards left!')
         self.card_count = tk.Label(
-            self, textvariable=self.cards_left, font=self.gui_fonts[0])
+            self, textvariable=self.cards_left, font=self.gui_disp_options[0])
         self.card_count.grid(
             row=3, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create quit app button
         tk.Button(
-            self, text='Quit', font=self.gui_fonts[0], command=self.quit_app).grid(
+            self, text='Quit', font=self.gui_disp_options[0], command=self.quit_app).grid(
                 row=4, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create units widget
-        self.units_display = CardDisplay(self, self.mydeck, 'units', self.gui_fonts)
+        self.units_display = CardDisplay(self, self.mydeck, 'units', self.gui_disp_options)
         self.units_display.grid(
             row=0, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create spells widget
-        self.spells_display = CardDisplay(self, self.mydeck, 'spells', self.gui_fonts)
+        self.spells_display = CardDisplay(self, self.mydeck, 'spells', self.gui_disp_options)
         self.spells_display.grid(
             row=1, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create power widget
-        self.power_display = CardDisplay(self, self.mydeck, 'power', self.gui_fonts)
+        self.power_display = CardDisplay(self, self.mydeck, 'power', self.gui_disp_options)
         self.power_display.grid(
             row=2, column=0, padx=padx, pady=pady, sticky='NSEW')
 
@@ -96,13 +98,15 @@ class CardDisplay(tk.Frame):
     """ Frame for card name and quantity """
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
-    def __init__(self, master, mydeck, display, gui_fonts, **kwargs):
-        tk.Frame.__init__(self, master, bg='#626262', **kwargs)
+    def __init__(self, master, mydeck, display, gui_disp_options, **kwargs):
 
         self.master = master
         self.mydeck = mydeck
-        self.text_font = gui_fonts[0]
-        self.title_font = gui_fonts[1]
+        self.text_font = gui_disp_options[0]
+        self.title_font = gui_disp_options[1]
+        self.bg_color = gui_disp_options[2]
+
+        tk.Frame.__init__(self, master, bg=self.bg_color, **kwargs)
 
         if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
             self.disp_type = 0
@@ -132,10 +136,6 @@ class CardDisplay(tk.Frame):
     def create_buttons(self):
         """ create buttons """
         # pylint: disable=too-many-locals
-        font_family = 'Helvetica'
-        self.text_font = font.Font(family=font_family, size=12)
-        self.title_font = font.Font(family=font_family, size=18, weight=font.BOLD)
-        b_bg = '#626262'
         ipadx = 20
         ipady = 3
         padx = 0
@@ -152,26 +152,26 @@ class CardDisplay(tk.Frame):
 
         # creating section title
         self.section_label_obj = tk.Label(
-            self, text=self.section_label, background=b_bg, font=self.title_font,
+            self, text=self.section_label, background=self.bg_color, font=self.title_font,
             foreground='blue')
         self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         # creating column labels
         tk.Label(self, text='Probability',
-                 background=b_bg, font=self.text_font).grid(row=1, column=0, ipadx=ipadx,
-                                                            ipady=ipady, padx=padx, pady=pady,
-                                                            sticky='NSEW')
+                 background=self.bg_color, font=self.text_font).grid(
+                     row=1, column=0, ipadx=ipadx, ipady=ipady, padx=padx,
+                     pady=pady, sticky='NSEW')
 
         tk.Label(self, text='Name',
-                 background=b_bg, font=self.text_font).grid(row=1, column=1, ipadx=ipadx,
-                                                            ipady=ipady, padx=padx, pady=pady,
-                                                            sticky='NSEW')
+                 background=self.bg_color, font=self.text_font).grid(
+                     row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady,
+                     sticky='NSEW')
 
         tk.Label(self, text='Quantity',
-                 background=b_bg, font=self.text_font).grid(row=1, column=2, ipadx=ipadx,
-                                                            ipady=ipady, padx=padx, pady=pady,
-                                                            sticky='NSEW')
+                 background=self.bg_color, font=self.text_font).grid(
+                     row=1, column=2, ipadx=ipadx,
+                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
@@ -181,7 +181,7 @@ class CardDisplay(tk.Frame):
             self.card_prob_button.append(
                 tk.Button(
                     self, textvariable=self.card_prob_str[
-                        i], background=b_bg, font=self.text_font,
+                        i], background=self.bg_color, font=self.text_font,
                     foreground=self.text_colors[i]))
             self.card_prob_button[i].grid(row=i + 2, column=0, sticky='NSEW')
 
@@ -190,7 +190,7 @@ class CardDisplay(tk.Frame):
             self.card_name_str[i].set(card.name)
             self.card_name_button.append(
                 tk.Button(
-                    self, textvariable=self.card_name_str[i], background=b_bg,
+                    self, textvariable=self.card_name_str[i], background=self.bg_color,
                     command=lambda i=i: self.subtract_card(self.disp_type, i), font=self.text_font,
                     foreground=self.text_colors[i]))
             self.card_name_button[i].grid(row=i + 2, column=1, sticky='NSEW')
@@ -201,7 +201,7 @@ class CardDisplay(tk.Frame):
             self.card_quantity_button.append(
                 tk.Button(
                     self, textvariable=self.card_quantity_str[
-                        i], background=b_bg,
+                        i], background=self.bg_color,
                     command=lambda i=i: self.add_card(self.disp_type, i), font=self.text_font,
                     foreground=self.text_colors[i]))
             self.card_quantity_button[i].grid(
@@ -322,11 +322,15 @@ class ProbDisplay(tk.Frame):
     """ Displays probability for card """
     # pylint: disable = too-many-ancestors
 
-    def __init__(self, master, mydeck, display, **kwargs):
-        tk.Frame.__init__(self, master, bg='#626262', **kwargs)
+    def __init__(self, master, mydeck, display, gui_disp_options, **kwargs):
 
-        self. master = master
+        self.master = master
         self.mydeck = mydeck
+        self.text_font = gui_disp_options[0]
+        self.title_font = gui_disp_options[1]
+        self.bg_color = gui_disp_options[2]
+
+        tk.Frame.__init__(self, master, bg=self.bg_color, **kwargs)
 
         if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
             self.disp_type = 0
@@ -348,6 +352,7 @@ class ProbDisplay(tk.Frame):
 
     def create_buttons(self):
         """ create probability buttons """
+
 
 
 def main(decklist, card_db):
