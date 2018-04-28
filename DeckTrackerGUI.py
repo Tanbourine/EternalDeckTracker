@@ -197,51 +197,54 @@ class CardDisplays(tk.Frame):
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
 
+
+
     def update_text_color(self):
         """ reads card influence and returns card text color """
+        # pylint:disable=too-many-branches
         text_colors = []
         color_instance = ''
 
-        for card_type in self.mydeck.deck:
-            for card in card_type:
-                influence_list = ''
-                num_colors = 0
-                for influence in card.influence.upper():
-                    if influence in ['F', 'S', 'J', 'P', 'T']:
-                        influence_list += influence
+        for card in self.mydeck.deck[self.disp_type]:
+            influence_list = ''
+            num_colors = 0
+            for influence in card.influence.upper():
+                if influence in ['F', 'S', 'J', 'P', 'T']:
+                    influence_list += influence
+            influence_list = set(influence_list)
 
+            color_instance = 'black'
+
+            if 'P' in influence_list:
+                if color_instance != 'dodger blue':
+                    num_colors += 1
+                color_instance = 'dodger blue'
+
+            if 'S' in influence_list:
+                if color_instance != 'medium purple':
+                    num_colors += 1
+                color_instance = 'medium purple'
+
+            if 'F' in influence_list:
+                if color_instance != 'red':
+                    num_colors += 1
+                color_instance = 'red'
+
+            if 'J' in influence_list:
+                if color_instance != 'forest green':
+                    num_colors += 1
+                color_instance = 'forest green'
+
+            if 'T' in influence_list:
+                if color_instance != 'gold':
+                    num_colors += 1
+                color_instance = 'gold'
+
+            if num_colors > 1:
                 color_instance = 'black'
-
-                if 'P' in influence_list:
-                    color_instance = 'navy'
-                    if color_instance != 'navy':
-                        num_colors += 1
-
-                if 'S' in influence_list:
-                    color_instance = 'purple'
-                    if color_instance != 'purple':
-                        num_colors += 1
-
-                if 'F' in influence_list:
-                    color_instance = 'red'
-                    if color_instance != 'red':
-                        num_colors += 1
-
-                if 'J' in influence_list:
-                    color_instance = 'forest green'
-                    if color_instance != 'forest green':
-                        num_colors += 1
-
-                if 'T' in influence_list:
-                    color_instance = 'gold'
-                    if color_instance != 'gold':
-                        num_colors += 1
-
-                if num_colors > 1:
-                    color_instance = 'pink'
-                    text_colors.append(color_instance)
-                else:
-                    text_colors.append(color_instance)
+                text_colors.append(color_instance)
+            else:
+                text_colors.append(color_instance)
 
         self.text_colors = text_colors
         return text_colors
