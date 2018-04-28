@@ -1,4 +1,5 @@
 __pycache__
+*.pyc
 *.swo
 *swp
 build

@@ -4,12 +4,12 @@ try:
     # python 3.x
     import tkinter as tk
     import tkinter.font as font
+    from tkinter import ttk
 
 except ImportError:
     # python 2.x
     import Tkinter as tk
     import tkFont as font
-# from tkinter import ttk
 
 
 class MainApplication(tk.Frame):
@@ -105,10 +105,6 @@ class CardDisplays(tk.Frame):
         gui_font = font.Font(family=font_family, size=12)
         title_font = font.Font(family=font_family, size=18, weight=font.BOLD)
         b_bg = '#626262'
-        # b_width = 20
-        # l_width = 6
-        # q_width = 3
-        # b_height = 0
         ipadx = 20
         ipady = 3
         padx = 0
@@ -125,7 +121,8 @@ class CardDisplays(tk.Frame):
 
         # creating section title
         self.section_label_obj = tk.Label(
-            self, text=self.section_label, background=b_bg, font=title_font)
+            self, text=self.section_label, background=b_bg, font=title_font,
+            foreground='blue')
         self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
@@ -147,11 +144,41 @@ class CardDisplays(tk.Frame):
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
+            num_colors = 0
+
+            for influence in card.influence.lower():
+                if influence == 'p':
+                    text_color = 'navy'
+                    num_colors += 1
+
+                elif influence == 's':
+                    text_color = 'purple'
+                    num_colors += 1
+
+                elif influence == 'f':
+                    text_color = 'red'
+                    num_colors += 1
+
+                elif influence == 'j':
+                    text_color = 'forest green'
+                    num_colors += 1
+
+                elif influence == 't':
+                    text_color = 'gold'
+                    num_colors += 1
+
+                else:
+                    text_color = 'black'
+
+                if num_colors > 1:
+                    text_color = 'gray18'
+
             # create probability button
             self.card_prob_str.append(tk.StringVar())
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
             self.card_prob_button.append(
-                tk.Button(self, textvariable=self.card_prob_str[i], background=b_bg, font=gui_font))
+                tk.Button(self, textvariable=self.card_prob_str[i], background=b_bg, font=gui_font,
+                          foreground=text_color))
             self.card_prob_button[i].grid(row=i+2, column=0, sticky='NSEW')
 
             # create name button
@@ -159,7 +186,7 @@ class CardDisplays(tk.Frame):
             self.card_name_str[i].set(card.name)
             self.card_name_button.append(
                 tk.Button(self, textvariable=self.card_name_str[i], background=b_bg,
-                          command=lambda i=i: self.subtract_card(self.disp_type, i), font=gui_font))
+                          command=lambda i=i: self.subtract_card(self.disp_type, i), font=gui_font, foreground=text_color))
             self.card_name_button[i].grid(row=i+2, column=1, sticky='NSEW')
 
             # create quantity button
@@ -167,7 +194,7 @@ class CardDisplays(tk.Frame):
             self.card_quantity_str[i].set(card.quantity)
             self.card_quantity_button.append(
                 tk.Button(self, textvariable=self.card_quantity_str[i], background=b_bg,
-                          command=lambda i=i: self.add_card(self.disp_type, i), font=gui_font))
+                          command=lambda i=i: self.add_card(self.disp_type, i), font=gui_font, foreground=text_color))
             self.card_quantity_button[i].grid(
                 row=i+2, column=2, sticky='NSEW')
 

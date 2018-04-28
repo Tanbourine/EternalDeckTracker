@@ -292,16 +292,20 @@ class Deck():
 
 
 def main():
-    # pylint: disable=too-many-statements, unused-variable, too-many-locals
+    # pylint: disable=invalid-name, unused-variable
     """ main function """
 
+    import pprint
     decklist = 'deck.csv'
     card_db = 'eternal-cards-1.31.json'
 
     # create deck from keyed_decklist
     mydeck = Deck(decklist, card_db)
 
-    print(mydeck.show_property('Name', 'Quantity'))
+    # pp = pprint.PrettyPrinter(indent=4)
+    # pp.pprint(mydeck.show_property('Name', 'Influence'))
+
+    return mydeck
 
 
 if __name__ == "__main__":
