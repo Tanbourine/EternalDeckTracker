@@ -12,18 +12,29 @@ class Deck():
         returns list -> [name, type, cost, key, quantity]"""
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, decklist_file, card_db_file):
+    def __init__(self, decklist_file, card_db_file, **kwargs):
 
+        # import deck from csv
         self.csv_deck = cd.import_deck(decklist_file)
+
+        # import card_db from json
         self.card_db = cd.import_json(card_db_file)
-        self.keyed_decklist = cd.create_keyed_decklist(
-            self.csv_deck, self.card_db)
+
+        # retrieve card data from card_db
+        self.keyed_decklist = cd.create_keyed_decklist(self.csv_deck, self.card_db)
+
+        # setting default kwargs options
+        self.sort_method = 'type_alpha'
+
+        # parsing kwargs options
+        for key in kwargs:
+            if key == 'sort':
+                self.sort_method = kwargs[key]
 
         # create deck
         self.raw_deck = self.create_card_obj_deck()
 
         # default deck sorting is type_alpha
-        self.sort_method = 'type_alpha'
         self.deck = self.deck_sort(self.sort_method)
 
         # initalize card probability
@@ -43,8 +54,14 @@ class Deck():
     def get_starting_power(self):
         """ creates dict of {power name : starting quantity} """
         starting_power = {}
-        for card_type in self.deck:
-            for card in card_type:
+        if self.sort_method in ['type_cost', 'type_alpha']:
+            for card_type in self.deck:
+                for card in card_type:
+                    if card.card_type == 'Power':
+                        starting_power[card.name] = card.quantity
+
+        else:
+            for card in self.deck:
                 if card.card_type == 'Power':
                     starting_power[card.name] = card.quantity
 
@@ -224,8 +241,17 @@ class Deck():
 
         card_count = self.count()
 
-        for card_type in self.deck:
-            for card in card_type:
+        if self.sort_method in ['type_cost', 'type_alpha']:
+            for card_type in self.deck:
+                for card in card_type:
+                    if card_count[3] != 0:
+                        probability = card.quantity / card_count[3]
+                        card.probability = probability * 100
+                    else:
+                        print('PROB ERROR: Cannot divide by zero')
+
+        else:
+            for card in self.deck:
                 if card_count[3] != 0:
                     probability = card.quantity / card_count[3]
                     card.probability = probability * 100
@@ -300,10 +326,10 @@ def main():
     card_db = 'eternal-cards-1.31.json'
 
     # create deck from keyed_decklist
-    mydeck = Deck(decklist, card_db)
+    mydeck = Deck(decklist, card_db, sort='type_alpha')
 
-    # pp = pprint.PrettyPrinter(indent=4)
-    # pp.pprint(mydeck.show_property('Name', 'Influence'))
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(mydeck.show_property('Name', 'Influence'))
 
     return mydeck
 
