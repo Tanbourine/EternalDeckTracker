@@ -194,10 +194,42 @@ class CardDisplays(tk.Frame):
     def update_probability(self):
         """ updates probability column """
 
+        # evaluate probability range
+        prob_arr = []
+        prob_dict = {}
+        num_steps = 3
+        for card in self.mydeck.deck[self.disp_type]:
+            prob_arr.append(card.probability)
+
+        prob_arr = sorted(list(set(prob_arr)))   # super paranoid just to be sure for diff ver
+        print('prob_arr', prob_arr)
+        increment = int(255 / len(prob_arr) * num_steps)
+        print('increment', increment)
+
+        for i, prob in enumerate(prob_arr):
+            print('prob', prob)
+            print('prob_arr', prob_arr[-i])
+            if prob < prob_arr[-i]/2:
+                if i+1 * increment < 255:
+                    prob_dict[prob] = [255, i * increment, 0]
+                else:
+                    prob_dict[prob] = [255, 255, 0]
+
+            elif prob < prob_arr[-i]:
+                if 255 - i+1 * increment > 0:
+                    prob_dict[prob] = [255 - i * increment, 255, 0]
+                else:
+                    prob_dict[prob] = [0, 255, 0]
+
+            else:
+                print('error')
+
+        print('prob_dict', prob_dict.items())
+        print('')
+        print('------------')
+
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
-
-
 
     def update_text_color(self):
         """ reads card influence and returns card text color """
