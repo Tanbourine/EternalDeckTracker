@@ -52,17 +52,44 @@ class MainApplication(tk.Frame):
 
         self.gui_disp_options = [text_font, title_font, bg_color]
 
+        self.create_menus()
+
+    def reset_sort(self, sort_method):
+        """ resets the gui with selected sort method """
+        self.sort_method = sort_method
+
+        self.units_display.destroy()
+        self.spells_display.destroy()
+        self.power_display.destroy()
+
+        self.mydeck.sort_deck(sort_method)
+        self.create_widgets()
+
     def create_menus(self):
         """ creating dropdown menus """
         main_menu = tk.Menu(self.master)
 
         # options menu
         options_menu = tk.Menu(main_menu, tearoff=0)
-
         sort_menu = tk.Menu(main_menu, tearoff=0)
-        sort_menu.add_radiobutton(label="Cost", variable=self.sort_method)
-        sort_menu.add_cascade(label="Sort Method", menu=options_menu)
-        options_menu.add_cascade(label="Options", menu=main_menu)
+
+        type_cost_radio = tk.StringVar()
+        type_alpha_radio = tk.StringVar()
+
+        if self.mydeck.sort_method == 'type_cost':
+            type_cost_radio.set("B")
+
+        elif self.mydeck.sort_method == 'type_alpha':
+            type_alpha_radio.set("")
+
+        sort_menu.add_radiobutton(label="Cost", command=lambda: self.reset_sort('type_cost'),
+                                  value=type_cost_radio)
+        sort_menu.add_radiobutton(label="Alphabetical",
+                                  command=lambda: self.reset_sort('type_alpha'),
+                                  value=type_alpha_radio)
+
+        main_menu.add_cascade(label="Options", menu=options_menu)
+        options_menu.add_cascade(label="Sort Method", menu=sort_menu)
 
         self.master.config(menu=main_menu)
 
@@ -73,8 +100,6 @@ class MainApplication(tk.Frame):
 
         font_family = 'Helvetica'
         self.text_font = font.Font(family=font_family, size=12)
-
-        self.create_menus()
 
         # create units widget
         self.units_display = CardDisplay(
@@ -486,6 +511,7 @@ def main(decklist, card_db):
     """ main function """
     # pylint: disable = global-variable-undefined, invalid-name
     global app
+    global root
 
     # mydeck = dk.Deck(decklist, card_db, sort='type_cost')
 
