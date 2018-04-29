@@ -11,17 +11,26 @@ except ImportError:
     import Tkinter as tk
     import tkFont as font
 
+import deck as dk
+
 
 class MainApplication(tk.Frame):
 
     """ master app """
     # pylint: disable = too-many-ancestors, too-many-instance-attributes
 
-    def __init__(self, master, mydeck):
+    def __init__(self, master, decklist, card_db, **kwargs):
         tk.Frame.__init__(self, master)
 
         self.master = master
-        self.mydeck = mydeck
+        self.decklist = decklist
+        self.card_db = card_db
+
+        for key in kwargs:
+            if key == 'sort':
+                self.sort_method = kwargs[key]
+
+        self.mydeck = dk.Deck(self.decklist, self.card_db, sort=self.sort_method)
 
         self.configure_gui()
         self.create_widgets()
@@ -51,6 +60,24 @@ class MainApplication(tk.Frame):
         font_family = 'Helvetica'
         self.text_font = font.Font(family=font_family, size=12)
 
+        # create units widget
+        self.units_display = CardDisplay(
+            self, self.mydeck, 'units', self.decklist, self.card_db, self.gui_disp_options)
+        self.units_display.grid(
+            row=0, column=0, padx=padx, pady=pady, sticky='NSEW')
+
+        # create spells widget
+        self.spells_display = CardDisplay(
+            self, self.mydeck, 'spells', self.decklist, self.card_db, self.gui_disp_options)
+        self.spells_display.grid(
+            row=1, column=0, padx=padx, pady=pady, sticky='NSEW')
+
+        # create power widget
+        self.power_display = CardDisplay(
+            self, self.mydeck, 'power', self.decklist, self.card_db, self.gui_disp_options)
+        self.power_display.grid(
+            row=2, column=0, padx=padx, pady=pady, sticky='NSEW')
+
         # create card count label
         self.cards_left = tk.StringVar()
         self.cards_left.set(
@@ -60,25 +87,14 @@ class MainApplication(tk.Frame):
         self.card_count.grid(
             row=3, column=0, padx=padx, pady=pady, sticky='NSEW')
 
+        # create reset button
+        tk.Button(self, text='Reset', font=self.gui_disp_options[0], command=self.reset_gui).grid(
+            row=4, column=0, padx=padx, pady=pady, sticky='NSEW')
+
         # create quit app button
         tk.Button(
             self, text='Quit', font=self.gui_disp_options[0], command=self.quit_app).grid(
-                row=4, column=0, padx=padx, pady=pady, sticky='NSEW')
-
-        # create units widget
-        self.units_display = CardDisplay(self, self.mydeck, 'units', self.gui_disp_options)
-        self.units_display.grid(
-            row=0, column=0, padx=padx, pady=pady, sticky='NSEW')
-
-        # create spells widget
-        self.spells_display = CardDisplay(self, self.mydeck, 'spells', self.gui_disp_options)
-        self.spells_display.grid(
-            row=1, column=0, padx=padx, pady=pady, sticky='NSEW')
-
-        # create power widget
-        self.power_display = CardDisplay(self, self.mydeck, 'power', self.gui_disp_options)
-        self.power_display.grid(
-            row=2, column=0, padx=padx, pady=pady, sticky='NSEW')
+                row=5, column=0, padx=padx, pady=pady, sticky='NSEW')
 
     def update_all_probability(self):
         """ calls update_probability on all obj """
@@ -92,22 +108,59 @@ class MainApplication(tk.Frame):
         """ closes screen """
         self.master.destroy()
 
+    def reset_gui(self):
+        """ resets gui with fresh deck """
+        # creates temporary new deck object to reset to
+        temp_deck = dk.Deck(self.decklist, self.card_db, sort=self.mydeck.sort_method)
+
+        for i in range(len(temp_deck.deck)):
+            for j, card in enumerate(temp_deck.deck[i]):
+                if i == 0:
+                    # set new quantity
+                    self.mydeck.deck[i][j].quantity = card.quantity
+
+                    # display new quantity on GUI
+                    self.units_display.card_quantity_str[j].set(card.quantity)
+
+                if i == 1:
+                    # set new quantity
+                    self.mydeck.deck[i][j].quantity = card.quantity
+
+                    # display new quantity on GUI
+                    self.spells_display.card_quantity_str[j].set(card.quantity)
+
+                if i == 2:
+                    # set new quantity
+                    self.mydeck.deck[i][j].quantity = card.quantity
+
+                    # display new quantity on GUI
+                    self.power_display.card_quantity_str[j].set(card.quantity)
+
+        # updates deck object's probability values
+        self.mydeck.update_probability()
+
+        # updates GUI's displayed probability
+        self.update_all_probability()
+
 
 class CardDisplay(tk.Frame):
 
     """ Frame for card name and quantity """
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
-    def __init__(self, master, mydeck, display, gui_disp_options, **kwargs):
+    def __init__(self, master, mydeck, display, decklist, card_db, gui_disp_options):
+        # pylint: disable=too-many-arguments
 
         self.master = master
         self.mydeck = mydeck
+        self.decklist = decklist
+        self.card_db = card_db
         self.text_font = gui_disp_options[0]
         self.title_font = gui_disp_options[1]
         self.bg_color = gui_disp_options[2]
         self.prob_color = []
 
-        tk.Frame.__init__(self, master, bg=self.bg_color, **kwargs)
+        tk.Frame.__init__(self, master, bg=self.bg_color)
 
         if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
             self.disp_type = 0
@@ -193,7 +246,7 @@ class CardDisplay(tk.Frame):
             self.card_name_button.append(
                 tk.Button(
                     self, textvariable=self.card_name_str[i], background=self.bg_color,
-                    command=lambda i=i: self.subtract_card(self.disp_type, i), font=self.text_font,
+                    command=lambda i=i: self.subtract_card(i), font=self.text_font,
                     fg=self.text_colors[i]))
             self.card_name_button[i].grid(row=i + 2, column=1, sticky='NSEW')
 
@@ -204,26 +257,26 @@ class CardDisplay(tk.Frame):
                 tk.Button(
                     self, textvariable=self.card_quantity_str[
                         i], background=self.bg_color,
-                    command=lambda i=i: self.add_card(self.disp_type, i), font=self.text_font,
+                    command=lambda i=i: self.add_card(i), font=self.text_font,
                     fg='black'))
             self.card_quantity_button[i].grid(
                 row=i + 2, column=2, sticky='NSEW')
 
-    def add_card(self, card_type, index):
+    def add_card(self, index):
         """ add card and updating tk StringVar """
-        self.mydeck.add_card(card_type, index)
+        self.mydeck.add_card(self.disp_type, index)
 
         self.card_quantity_str[index].set(
-            self.mydeck.deck[card_type][index].quantity)
+            self.mydeck.deck[self.disp_type][index].quantity)
 
         app.update_all_probability()
 
-    def subtract_card(self, card_type, index):
+    def subtract_card(self, index):
         """ add card and updating tk StringVar """
-        self.mydeck.subtract_card(card_type, index)
+        self.mydeck.subtract_card(self.disp_type, index)
 
         self.card_quantity_str[index].set(
-            self.mydeck.deck[card_type][index].quantity)
+            self.mydeck.deck[self.disp_type][index].quantity)
 
         app.update_all_probability()
 
@@ -361,17 +414,24 @@ class CardDisplay(tk.Frame):
             else:
                 self.text_colors.append(color_instance)
 
+    def update_quantity_display(self):
+        """ updates quantity on gui """
+
+        temp_deck = dk.Deck(self.decklist, self.card_db, sort=self.mydeck.sort_method)
+
+        for i, card in enumerate(temp_deck.deck[self.disp_type]):
+            self.card_quantity_str[i].set(card.quantity)
+
 
 def main(decklist, card_db):
     """ main function """
     # pylint: disable = global-variable-undefined, invalid-name
-    import deck as dk
     global app
 
-    mydeck = dk.Deck(decklist, card_db, sort='type_cost')
+    # mydeck = dk.Deck(decklist, card_db, sort='type_cost')
 
     root = tk.Tk()
-    app = MainApplication(root, mydeck)
+    app = MainApplication(root, decklist, card_db, sort='type_cost')
 
     root.grid_rowconfigure(0, weight=1)
     root.grid_columnconfigure(0, weight=1)
