@@ -13,8 +13,8 @@ This will take the card object and sort it in various ways
 
 ## TODO
 - [x] probability colors
-- [ ] custom display column displaying the cost or influence
-- [ ] make probability a label instead of button
+- [x] custom display column displaying the cost or influence
+- [x] make probability a label instead of button
 - [ ] file menu to change sort method
 - [x] reset button
 - [ ] change font size
