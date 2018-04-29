@@ -8,16 +8,16 @@ the json database to obtain the card's metadata. It will then create a card
 object with the data.
 
 ## Deck.py
-This will take the card object and sort it in various ways 
+This will take the card object and sort it in various ways
 
 
 ## TODO
 - [x] probability colors
-- [] custom display column displaying the cost or influence
-- [] make probability a label instead of button
-- [] file menu to change sort method
-- [] reset button
-- [] change font size
+- [ ] custom display column displaying the cost or influence
+- [ ] make probability a label instead of button
+- [ ] file menu to change sort method
+- [ ] reset button
+- [ ] change font size
 
 
 #### Main GUI Layout
