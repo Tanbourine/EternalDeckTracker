@@ -55,7 +55,8 @@ def import_deck(decklist):
             # 2 Permafrost (Set1 #193)
 
             # isolating quantity of each card
-            quantity = int(card[0][0:2])
+            find_quantity_space = card[0].find(" ")
+            quantity = int(card[0][0:find_quantity_space])
 
             # paranthesis is first non-name char
             find_paranthesis = card[0].find("(")
@@ -77,8 +78,12 @@ def create_keyed_decklist(deck, card_db):
     # make list of keys to link decklist and json
     for card in deck:
         for index, db_card in enumerate(card_db):
-            if card[0] in db_card["Name"]:
+            if card[0] == db_card["Name"]:
                 deck_keys.append(index)
+                break
+
+    if len(deck) != len(deck_keys):
+        print('PARSE ERROR: Not all cards have been loaded successfully')
 
     # make list of [card_key, quantity]
     # this is the new decklist since it can be used to retrieve all json data
