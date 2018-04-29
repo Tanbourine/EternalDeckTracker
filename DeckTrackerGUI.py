@@ -189,8 +189,8 @@ class CardDisplay(tk.Frame):
             self.grid_rowconfigure(i, weight=1)
 
         self.grid_columnconfigure(0, weight=1, minsize=half_size)
-        self.grid_columnconfigure(1, weight=1, minsize=full_size)
-        self.grid_columnconfigure(2, weight=1, minsize=half_size)
+        self.grid_columnconfigure(1, weight=1, minsize=half_size)
+        self.grid_columnconfigure(2, weight=1, minsize=full_size)
         self.grid_columnconfigure(3, weight=1, minsize=half_size)
 
         self.update_text_color()
