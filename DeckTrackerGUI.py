@@ -323,6 +323,8 @@ class CardDisplay(tk.Frame):
                     influence_list += influence
             influence_list = set(influence_list)
 
+            color_instance = neutral
+
             if 'P' in influence_list:
                 # if color isn't already this
                 if color_instance != primal:
@@ -353,16 +355,11 @@ class CardDisplay(tk.Frame):
                     num_colors += 1
                 color_instance = time
 
-            else:
-                color_instance = neutral
-
             if num_colors > 1:
                 color_instance = multi
                 self.text_colors.append(color_instance)
             else:
                 self.text_colors.append(color_instance)
-
-        return self.text_colors
 
 
 class ProbDisplay(tk.Frame):
