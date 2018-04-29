@@ -13,8 +13,34 @@ This will take the card object and sort it in various ways
 
 ## TODO
 - [] probability colors
-- [] custom display  column displaying the cost or influence
+- [] custom display column displaying the cost or influence
 - [] make probability a label instead of button
 - [] file menu to change sort method
 - [] reset button
 - [] change font size
+
+
+#### Main GUI Layout
+
+```
+|----------------------------|
+|                            |
+|                            |
+|           units            |
+|                            |
+|                            |
+|----------------------------|
+|                            |
+|                            |
+|           spells           |
+|                            |
+|                            |
+|----------------------------|
+|                            |
+|                            |
+|           power            |
+|                            |
+|                            |
+|----------------------------|
+
+```
