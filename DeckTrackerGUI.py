@@ -142,6 +142,8 @@ class MainApplication(tk.Frame):
         # updates GUI's displayed probability
         self.update_all_probability()
 
+        print('DECK HAS BEEN RESET')
+
 
 class CardDisplay(tk.Frame):
 
@@ -193,8 +195,8 @@ class CardDisplay(tk.Frame):
         # pylint: disable=too-many-locals
         ipadx = 20
         ipady = 3
-        padx = 0
-        pady = 0
+        padx = 5
+        pady = 00
 
         self.card_name_button = []
         self.card_name_str = []
@@ -213,7 +215,7 @@ class CardDisplay(tk.Frame):
                                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         # creating column labels
-        tk.Label(self, text='Probability',
+        tk.Label(self, text='%',
                  background=self.bg_color, font=self.text_font).grid(
                      row=1, column=0, ipadx=ipadx, ipady=ipady, padx=padx,
                      pady=pady, sticky='NSEW')
@@ -223,7 +225,7 @@ class CardDisplay(tk.Frame):
                      row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady,
                      sticky='NSEW')
 
-        tk.Label(self, text='Quantity',
+        tk.Label(self, text='#',
                  background=self.bg_color, font=self.text_font).grid(
                      row=1, column=2, ipadx=ipadx,
                      ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
@@ -234,11 +236,11 @@ class CardDisplay(tk.Frame):
             self.card_prob_str.append(tk.StringVar())
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
             self.card_prob_button.append(
-                tk.Button(
+                tk.Label(
                     self, textvariable=self.card_prob_str[
-                        i], background=self.bg_color, font=self.text_font,
+                        i], bg=self.bg_color, font=self.text_font,
                     fg=self.text_colors[i]))
-            self.card_prob_button[i].grid(row=i + 2, column=0, sticky='NSEW')
+            self.card_prob_button[i].grid(row=i + 2, column=0, sticky='NSEW', padx=padx, pady=pady)
 
             # create name button
             self.card_name_str.append(tk.StringVar())
