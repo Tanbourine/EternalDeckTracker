@@ -284,17 +284,26 @@ class CardDisplay(tk.Frame):
 
             if self.mydeck.sort_method in ['type_cost']:
                 self.custom_column_str[i].set(card.cost)
-                self.custom_column.append(
-                    tk.Label(self, textvariable=self.custom_column_str[i], bg=self.bg_color,
-                             font=self.text_font, fg=self.text_colors[i]))
-                self.custom_column[i].grid(
-                    row=i + 2, column=1, sticky='NSEW', padx=padx, pady=pady)
-
-                # Probability
                 tk.Label(self, text='Cost',
                          bg=self.bg_color, font=self.text_font).grid(
                              row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx,
                              pady=pady, sticky='NSEW')
+
+            elif self.mydeck.sort_method in ['type_alpha']:
+                self.custom_column_str[i].set(card.influence)
+                tk.Label(self, text='Influence',
+                         bg=self.bg_color, font=self.text_font).grid(
+                             row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx,
+                             pady=pady, sticky='NSEW')
+
+            else:
+                print('Column not supported yet')
+
+            self.custom_column.append(
+                tk.Label(self, textvariable=self.custom_column_str[i], bg=self.bg_color,
+                         font=self.text_font, fg=self.text_colors[i]))
+            self.custom_column[i].grid(
+                row=i + 2, column=1, sticky='NSEW', padx=padx, pady=pady)
 
     def add_card(self, index):
         """ add card and updating tk StringVar """
