@@ -62,19 +62,22 @@ class MainApplication(tk.Frame):
 
         # create units widget
         self.units_display = CardDisplay(
-            self, self.mydeck, 'units', self.decklist, self.card_db, self.gui_disp_options)
+            self, self.mydeck, self.decklist, self.card_db, self.gui_disp_options,
+            disp_type='units')
         self.units_display.grid(
             row=0, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create spells widget
         self.spells_display = CardDisplay(
-            self, self.mydeck, 'spells', self.decklist, self.card_db, self.gui_disp_options)
+            self, self.mydeck, self.decklist, self.card_db, self.gui_disp_options,
+            disp_type='spells')
         self.spells_display.grid(
             row=1, column=0, padx=padx, pady=pady, sticky='NSEW')
 
         # create power widget
         self.power_display = CardDisplay(
-            self, self.mydeck, 'power', self.decklist, self.card_db, self.gui_disp_options)
+            self, self.mydeck, self.decklist, self.card_db, self.gui_disp_options,
+            disp_type='power')
         self.power_display.grid(
             row=2, column=0, padx=padx, pady=pady, sticky='NSEW')
 
@@ -150,7 +153,7 @@ class CardDisplay(tk.Frame):
     """ Frame for card name and quantity """
     # pylint: disable=too-many-ancestors, too-many-instance-attributes
 
-    def __init__(self, master, mydeck, display, decklist, card_db, gui_disp_options):
+    def __init__(self, master, mydeck, decklist, card_db, gui_disp_options, **kwargs):
         # pylint: disable=too-many-arguments
 
         self.master = master
@@ -163,6 +166,10 @@ class CardDisplay(tk.Frame):
         self.prob_color = []
 
         tk.Frame.__init__(self, master, bg=self.bg_color)
+
+        for key in kwargs:
+            if key == 'disp_type':
+                display = kwargs[key]
 
         if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
             self.disp_type = 0
@@ -182,8 +189,9 @@ class CardDisplay(tk.Frame):
             self.grid_rowconfigure(i, weight=1)
 
         self.grid_columnconfigure(0, weight=1, minsize=half_size)
-        self.grid_columnconfigure(1, weight=3, minsize=full_size)
+        self.grid_columnconfigure(1, weight=1, minsize=full_size)
         self.grid_columnconfigure(2, weight=1, minsize=half_size)
+        self.grid_columnconfigure(3, weight=1, minsize=half_size)
 
         self.update_text_color()
 
@@ -195,7 +203,7 @@ class CardDisplay(tk.Frame):
         # pylint: disable=too-many-locals
         ipadx = 20
         ipady = 3
-        padx = 5
+        padx = 10
         pady = 00
 
         self.card_name_button = []
@@ -207,29 +215,36 @@ class CardDisplay(tk.Frame):
         self.card_prob_button = []
         self.card_prob_str = []
 
+        self.custom_column = []
+        self.custom_column_str = []
+
         # creating section title
         self.section_label_obj = tk.Label(
             self, text=self.section_label, background=self.bg_color, font=self.title_font,
             foreground='blue')
-        self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
+        self.section_label_obj.grid(row=0, column=0, columnspan=4, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         # creating column labels
+        # Probability
         tk.Label(self, text='%',
                  background=self.bg_color, font=self.text_font).grid(
                      row=1, column=0, ipadx=ipadx, ipady=ipady, padx=padx,
                      pady=pady, sticky='NSEW')
 
+        # Name
         tk.Label(self, text='Name',
                  background=self.bg_color, font=self.text_font).grid(
-                     row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady,
+                     row=1, column=2, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady,
                      sticky='NSEW')
 
+        # Quantity
         tk.Label(self, text='#',
                  background=self.bg_color, font=self.text_font).grid(
-                     row=1, column=2, ipadx=ipadx,
+                     row=1, column=3, ipadx=ipadx,
                      ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
+        # creating rest of buttons
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
 
             # create probability button
@@ -250,7 +265,7 @@ class CardDisplay(tk.Frame):
                     self, textvariable=self.card_name_str[i], background=self.bg_color,
                     command=lambda i=i: self.subtract_card(i), font=self.text_font,
                     fg=self.text_colors[i]))
-            self.card_name_button[i].grid(row=i + 2, column=1, sticky='NSEW')
+            self.card_name_button[i].grid(row=i + 2, column=2, sticky='NSEW')
 
             # create quantity button
             self.card_quantity_str.append(tk.StringVar())
@@ -262,7 +277,24 @@ class CardDisplay(tk.Frame):
                     command=lambda i=i: self.add_card(i), font=self.text_font,
                     fg='black'))
             self.card_quantity_button[i].grid(
-                row=i + 2, column=2, sticky='NSEW')
+                row=i + 2, column=3, sticky='NSEW')
+
+            # create custom column
+            self.custom_column_str.append(tk.StringVar())
+
+            if self.mydeck.sort_method in ['type_cost']:
+                self.custom_column_str[i].set(card.cost)
+                self.custom_column.append(
+                    tk.Label(self, textvariable=self.custom_column_str[i], bg=self.bg_color,
+                             font=self.text_font, fg=self.text_colors[i]))
+                self.custom_column[i].grid(
+                    row=i + 2, column=1, sticky='NSEW', padx=padx, pady=pady)
+
+                # Probability
+                tk.Label(self, text='Cost',
+                         bg=self.bg_color, font=self.text_font).grid(
+                             row=1, column=1, ipadx=ipadx, ipady=ipady, padx=padx,
+                             pady=pady, sticky='NSEW')
 
     def add_card(self, index):
         """ add card and updating tk StringVar """
