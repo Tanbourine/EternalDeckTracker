@@ -362,43 +362,6 @@ class CardDisplay(tk.Frame):
                 self.text_colors.append(color_instance)
 
 
-class ProbDisplay(tk.Frame):
-
-    """ Displays probability for card """
-    # pylint: disable = too-many-ancestors
-
-    def __init__(self, master, mydeck, display, gui_disp_options, **kwargs):
-
-        self.master = master
-        self.mydeck = mydeck
-        self.text_font = gui_disp_options[0]
-        self.title_font = gui_disp_options[1]
-        self.bg_color = gui_disp_options[2]
-
-        tk.Frame.__init__(self, master, bg=self.bg_color, **kwargs)
-
-        if display.lower() in ['unit', 'units', '0', 'monsters', 0]:
-            self.disp_type = 0
-            self.section_label = 'Units'
-
-        elif display.lower() in ['spell', 'spells', 'magic', '1', 1]:
-            self.disp_type = 1
-            self.section_label = 'Spells'
-
-        elif display.lower() in ['power', 'power', 'land', 'sigil', 'sigils', '2', 2]:
-            self.disp_type = 2
-            self.section_label = 'Power'
-
-        for i in range(100):
-            self.grid_rowconfigure(i, weight=1)
-            self.grid_columnconfigure(i, weight=1)
-
-        self.create_buttons()
-
-    def create_buttons(self):
-        """ create probability buttons """
-
-
 def main(decklist, card_db):
     """ main function """
     # pylint: disable = global-variable-undefined, invalid-name
