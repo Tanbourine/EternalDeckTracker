@@ -35,7 +35,7 @@ class Deck():
         self.raw_deck = self.create_card_obj_deck()
 
         # default deck sorting is type_alpha
-        self.deck = self.deck_sort(self.sort_method)
+        self.deck = self.sort_deck(self.sort_method)
 
         # initalize card probability
         self.update_probability()
@@ -111,7 +111,7 @@ class Deck():
 
         return units_arr, spells_arr, power_arr
 
-    def deck_sort(self, sort_method):
+    def sort_deck(self, sort_method):
         """ sorts the deck by specified method
             Available sorts:
             'type_alpha', 'type_cost', 'alpha', 'cost_alpha' """
