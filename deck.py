@@ -24,7 +24,7 @@ class Deck():
         self.keyed_decklist = cd.create_keyed_decklist(self.csv_deck, self.card_db)
 
         # setting default kwargs options
-        self.sort_method = 'type_alpha'
+        self.sort_method = 'type_cost'
 
         # parsing kwargs options
         for key in kwargs:
