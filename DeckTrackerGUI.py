@@ -105,6 +105,7 @@ class CardDisplay(tk.Frame):
         self.text_font = gui_disp_options[0]
         self.title_font = gui_disp_options[1]
         self.bg_color = gui_disp_options[2]
+        self.prob_color = []
 
         tk.Frame.__init__(self, master, bg=self.bg_color, **kwargs)
 
@@ -132,6 +133,7 @@ class CardDisplay(tk.Frame):
         self.update_text_color()
 
         self.create_buttons()
+        self.update_probability()
 
     def create_buttons(self):
         """ create buttons """
@@ -182,7 +184,7 @@ class CardDisplay(tk.Frame):
                 tk.Button(
                     self, textvariable=self.card_prob_str[
                         i], background=self.bg_color, font=self.text_font,
-                    foreground=self.text_colors[i]))
+                    fg=self.text_colors[i]))
             self.card_prob_button[i].grid(row=i + 2, column=0, sticky='NSEW')
 
             # create name button
@@ -192,7 +194,7 @@ class CardDisplay(tk.Frame):
                 tk.Button(
                     self, textvariable=self.card_name_str[i], background=self.bg_color,
                     command=lambda i=i: self.subtract_card(self.disp_type, i), font=self.text_font,
-                    foreground=self.text_colors[i]))
+                    fg=self.text_colors[i]))
             self.card_name_button[i].grid(row=i + 2, column=1, sticky='NSEW')
 
             # create quantity button
@@ -203,7 +205,7 @@ class CardDisplay(tk.Frame):
                     self, textvariable=self.card_quantity_str[
                         i], background=self.bg_color,
                     command=lambda i=i: self.add_card(self.disp_type, i), font=self.text_font,
-                    foreground=self.text_colors[i]))
+                    fg='black'))
             self.card_quantity_button[i].grid(
                 row=i + 2, column=2, sticky='NSEW')
 
@@ -228,49 +230,90 @@ class CardDisplay(tk.Frame):
     def update_probability(self):
         """ updates probability column """
 
-        # evaluate probability range
-        prob_arr = []
-        prob_dict = {}
-        num_steps = 3
-        for card in self.mydeck.deck[self.disp_type]:
-            prob_arr.append(card.probability)
-
-        prob_arr = sorted(list(set(prob_arr)))
-                          # super paranoid just to be sure for diff ver
-        print('prob_arr', prob_arr)
-        increment = int(255 / len(prob_arr) * num_steps)
-        print('increment', increment)
-
-        for i, prob in enumerate(prob_arr):
-            print('prob', prob)
-            print('prob_arr', prob_arr[-i])
-            if prob < prob_arr[-i] / 2:
-                if i + 1 * increment < 255:
-                    prob_dict[prob] = [255, i * increment, 0]
-                else:
-                    prob_dict[prob] = [255, 255, 0]
-
-            elif prob < prob_arr[-i]:
-                if 255 - i + 1 * increment > 0:
-                    prob_dict[prob] = [255 - i * increment, 255, 0]
-                else:
-                    prob_dict[prob] = [0, 255, 0]
-
-            else:
-                print('error')
-
-        print('prob_dict', prob_dict.items())
-        print('')
-        print('------------')
+        self.assign_prob_color()
 
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
+            self.card_prob_button[i].configure(fg=self.prob_color[self.disp_type][i])
+
+    def assign_prob_color(self):
+        """ assigns probability colors """
+        # pylint: disable = too-many-branches
+
+        # evaluate probability range
+        prob_arr = []
+        prob_dict = {}
+        num_colors = 3
+        hysteresis = 25
+
+        for card_type in self.mydeck.deck:
+            for card in card_type:
+                prob_arr.append(card.probability)
+
+        # get unique probabilities and sort
+        prob_arr = sorted(list(set(prob_arr)))
+
+        increment = int(255 / len(prob_arr) * num_colors)
+
+        # assign colors to probability
+        pos_color_var = 0
+        neg_color_var = 0
+        for prob in prob_arr:
+
+            # if prob is turning yellow
+            if prob < prob_arr[-1] / 2:
+
+                # set 0% as red
+                if prob == prob_arr[0]:
+                    prob_dict[prob] = (255, 0, 0)
+
+                else:
+                    # if color does not exceed (255,255,0)
+                    if pos_color_var + increment < 255 - hysteresis:
+                        # increase color towards yellow
+                        pos_color_var += increment
+                        prob_dict[prob] = (255, pos_color_var, 0)
+                    else:
+                        # if color exceeds (255, 255, 0), cap it!
+                        prob_dict[prob] = (255, 255, 0)
+
+            # if prob is turning green
+            else:
+
+                # set highest prob as green
+                if prob == prob_arr[-1]:
+                    prob_dict[prob] = (0, 255, 0)
+
+                else:
+                    # if color does not exceed (0, 255, 0)
+                    if neg_color_var + increment < 255 - hysteresis:
+                        # decrease color towards green
+                        neg_color_var += increment
+                        prob_dict[prob] = (255 - neg_color_var, 255, 0)
+                    else:
+                        # if color exceeds (0, 255, 0), cap it!
+                        prob_dict[prob] = (0, 255, 0)
+
+        # reset self.prob_color
+        self.prob_color = []
+        for i, card_type in enumerate(self.mydeck.deck):
+            self.prob_color.append([])
+            for card in card_type:
+                # convert RGB to HEX
+                self.prob_color[i].append('#%02x%02x%02x' % prob_dict[card.probability])
 
     def update_text_color(self):
         """ reads card influence and returns card text color """
         # pylint:disable=too-many-branches
-        text_colors = []
+        self.text_colors = []
         color_instance = ''
+        primal = 'dodger blue'
+        shadow = 'medium purple'
+        fire = 'red'
+        justice = 'forest green'
+        time = 'gold'
+        neutral = 'gray18'
+        multi = 'pink'
 
         for card in self.mydeck.deck[self.disp_type]:
             influence_list = ''
@@ -280,41 +323,46 @@ class CardDisplay(tk.Frame):
                     influence_list += influence
             influence_list = set(influence_list)
 
-            color_instance = 'black'
-
             if 'P' in influence_list:
-                if color_instance != 'dodger blue':
+                # if color isn't already this
+                if color_instance != primal:
                     num_colors += 1
-                color_instance = 'dodger blue'
+                color_instance = primal
 
             if 'S' in influence_list:
-                if color_instance != 'medium purple':
+                # if color isn't already this
+                if color_instance != shadow:
                     num_colors += 1
-                color_instance = 'medium purple'
+                color_instance = shadow
 
             if 'F' in influence_list:
-                if color_instance != 'red':
+                # if color isn't already this
+                if color_instance != fire:
                     num_colors += 1
-                color_instance = 'red'
+                color_instance = fire
 
             if 'J' in influence_list:
-                if color_instance != 'forest green':
+                # if color isn't already this
+                if color_instance != justice:
                     num_colors += 1
-                color_instance = 'forest green'
+                color_instance = justice
 
             if 'T' in influence_list:
-                if color_instance != 'gold':
+                # if color isn't already this
+                if color_instance != time:
                     num_colors += 1
-                color_instance = 'gold'
+                color_instance = time
+
+            else:
+                color_instance = neutral
 
             if num_colors > 1:
-                color_instance = 'black'
-                text_colors.append(color_instance)
+                color_instance = multi
+                self.text_colors.append(color_instance)
             else:
-                text_colors.append(color_instance)
+                self.text_colors.append(color_instance)
 
-        self.text_colors = text_colors
-        return text_colors
+        return self.text_colors
 
 
 class ProbDisplay(tk.Frame):
@@ -354,14 +402,13 @@ class ProbDisplay(tk.Frame):
         """ create probability buttons """
 
 
-
 def main(decklist, card_db):
     """ main function """
     # pylint: disable = global-variable-undefined, invalid-name
     import deck as dk
     global app
 
-    mydeck = dk.Deck(decklist, card_db)
+    mydeck = dk.Deck(decklist, card_db, sort='type_cost')
 
     root = tk.Tk()
     app = MainApplication(root, mydeck)
