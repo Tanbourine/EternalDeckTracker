@@ -52,6 +52,20 @@ class MainApplication(tk.Frame):
 
         self.gui_disp_options = [text_font, title_font, bg_color]
 
+    def create_menus(self):
+        """ creating dropdown menus """
+        main_menu = tk.Menu(self.master)
+
+        # options menu
+        options_menu = tk.Menu(main_menu, tearoff=0)
+
+        sort_menu = tk.Menu(main_menu, tearoff=0)
+        sort_menu.add_radiobutton(label="Cost", variable=self.sort_method)
+        sort_menu.add_cascade(label="Sort Method", menu=options_menu)
+        options_menu.add_cascade(label="Options", menu=main_menu)
+
+        self.master.config(menu=main_menu)
+
     def create_widgets(self):
         """ initalizes widgets """
         padx = 10
@@ -59,6 +73,8 @@ class MainApplication(tk.Frame):
 
         font_family = 'Helvetica'
         self.text_font = font.Font(family=font_family, size=12)
+
+        self.create_menus()
 
         # create units widget
         self.units_display = CardDisplay(
