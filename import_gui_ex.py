@@ -3,6 +3,7 @@ import tkinter as tk
 
 # https://stackoverflow.com/questions/16996432/how-do-i-bind-the-enter-key-to-a-function-in-tkinter
 
+
 class ImportApplication(tk.Frame):
 
     """ main application frame. build other frames into this"""
@@ -13,9 +14,12 @@ class ImportApplication(tk.Frame):
 
         self.master = master
         self.create_widget()
+        self.poop = 0
 
     def create_widget(self):
         """ create stuff here """
+
+        self.master.bind('<Return>', self.get_entry)
 
         # creating entry
         self.dialog = tk.Entry(self)
@@ -39,14 +43,14 @@ class ImportApplication(tk.Frame):
         """ closes app"""
         self.master.destroy()
 
-    def get_entry(self):
+    def get_entry(self, event):
         """sdjkfjd"""
-        poop = self.dialog.get()
-        print(poop)
+        # pylint: disable=unused-argument
+        self.poop = self.dialog.get()
+        print(self.poop)
 
         # set StringVar in button to goodbye
-        self.string.set('Goodbye')
-
+        self.string.set(self.poop)
 
 
 def main():
