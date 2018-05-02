@@ -22,6 +22,7 @@ class ImportPage(tk.Frame):
         self.master = master
         self.create_widget()
         self.entry_input = 0
+        self.new_deck = []
 
     def create_widget(self):
         """Creates Opening Widget on Page 2"""
@@ -36,23 +37,40 @@ class ImportPage(tk.Frame):
         self.enter_key = tk.Button(self, textvariable=self.button_label, command=self.get_entry)
         self.enter_key.grid(row=0, column=1)
 
+        self.deck1_label = tk.Label(self, text='label')
+        self.deck1_label.grid(row=1, column=0)
+
         # buttons to load in saved decks
 #        self.deck1_button = tk.Button(self, text = deckname, commmand=self.build_deck)
 
-    def get_entry(self, event):
+    def get_entry(self, event=0):
         """Gets data from dialogue box"""
         # pylint: disable=unused-argument
         self.entry_input = self.dialogue.get()
         print(self.entry_input)
+        self.new_deck = []
+        self.new_deck = self.read_entry(self.entry_input)
+        print(self.new_deck)
 
-        self.button_label.set(self.entry_input)
-
+    def read_entry(self, entry_input):
+        """Reads the entry and splits it into an array to parse through to identify the deck"""
+        new_deck = []
+        start = 0
+        end = 0
+        for i in len(entry_input):
+            if entry_input(i) == '\n':
+                end = i
+                new_deck.append(entry_input[start:end])
+                entry_input.replace(i, 'x')
+                start = end+1
+        return new_deck
 
 def main():
     """main"""
     root = tk.Tk()
     app = ImportPage(root)
     app.grid()
+
 
     app.mainloop()
 
