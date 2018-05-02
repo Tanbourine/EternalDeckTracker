@@ -45,8 +45,8 @@ class MainApplication(tk.Frame):
             self.grid_rowconfigure(i, weight=1)
 
         font_family = 'Helvetica'
-        text_font = font.Font(family=font_family, size=12)
-        title_font = font.Font(family=font_family, size=18, weight=font.BOLD)
+        text_font = font.Font(family=font_family, size=10)
+        title_font = font.Font(family=font_family, size=14, weight=font.BOLD)
 
         bg_color = '#626262'
 
@@ -260,10 +260,11 @@ class CardDisplay(tk.Frame):
         self.custom_column_str = []
 
         # creating section title
+        self.section_title = tk.StringVar()
         self.section_label_obj = tk.Label(
-            self, text=self.section_label, background=self.bg_color, font=self.title_font,
+            self, textvariable=self.section_title, background=self.bg_color, font=self.title_font,
             foreground='blue')
-        self.section_label_obj.grid(row=0, column=0, columnspan=4, ipadx=100,
+        self.section_label_obj.grid(row=0, column=0, columnspan=3, ipadx=100,
                                     ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         # creating column labels
@@ -286,7 +287,10 @@ class CardDisplay(tk.Frame):
                      ipady=ipady, padx=padx, pady=pady, sticky='NSEW')
 
         # creating rest of buttons
+        self.section_prob = 0
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
+
+            self.section_prob += card.probability
 
             # create probability button
             self.card_prob_str.append(tk.StringVar())
@@ -346,6 +350,8 @@ class CardDisplay(tk.Frame):
             self.custom_column[i].grid(
                 row=i + 2, column=1, sticky='NSEW', padx=padx, pady=pady)
 
+        self.section_title.set(self.section_label + ' : ' + '{0:0.2f}'.format(self.section_prob))
+
     def add_card(self, index):
         """ add card and updating tk StringVar """
         self.mydeck.add_card(self.disp_type, index)
@@ -369,9 +375,13 @@ class CardDisplay(tk.Frame):
 
         self.assign_prob_color()
 
+        self.section_prob = 0
         for i, card in enumerate(self.mydeck.deck[self.disp_type]):
+            self.section_prob += card.probability
             self.card_prob_str[i].set('{0:0.2f}'.format(card.probability))
             self.card_prob_button[i].configure(fg=self.prob_color[self.disp_type][i])
+
+        self.section_title.set(self.section_label + ' : ' + '{0:0.2f}'.format(self.section_prob))
 
     def assign_prob_color(self):
         """ assigns probability colors """
@@ -520,7 +530,7 @@ def main(decklist, card_db):
 
     root.grid_rowconfigure(0, weight=1)
     root.grid_columnconfigure(0, weight=1)
-    root.minsize(280, 800)
+    root.minsize(200, 800)
 
     # app.grid(row=0, column=0, sticky='NSEW')
     app.pack(fill='both')
