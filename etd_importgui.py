@@ -59,9 +59,8 @@ class ImportPage(tk.Frame):
                 self.new_deck.append(self.entry_input[start:end])
                 self.entry_input.replace(self.entry_input[i], 'x')
                 start = end+1
-                print (self.new_deck)
 
-def main():
+    def main():
     """main"""
     root = tk.Tk()
     app = ImportPage(root)
