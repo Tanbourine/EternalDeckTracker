@@ -46,24 +46,20 @@ class ImportPage(tk.Frame):
     def get_entry(self, event=0):
         """Gets data from dialogue box"""
         # pylint: disable=unused-argument
-        self.entry_input = self.dialogue.get()
+        self.entry_input = self.dialogue.get() + '\n'
         print(self.entry_input)
-        self.new_deck = []
-        self.new_deck = self.read_entry(self.entry_input)
-        print(self.new_deck)
 
-    def read_entry(self, entry_input):
-        """Reads the entry and splits it into an array to parse through to identify the deck"""
-        new_deck = []
+
+        self.new_deck = []
         start = 0
         end = 0
-        for i in len(entry_input):
-            if entry_input(i) == '\n':
+        for i in range(len(self.entry_input)):
+            if self.entry_input[i] == '\n':
                 end = i
-                new_deck.append(entry_input[start:end])
-                entry_input.replace(i, 'x')
+                self.new_deck.append(self.entry_input[start:end])
+                self.entry_input.replace(self.entry_input[i], 'x')
                 start = end+1
-        return new_deck
+                print (self.new_deck)
 
 def main():
     """main"""
