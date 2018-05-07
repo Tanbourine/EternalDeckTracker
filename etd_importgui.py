@@ -10,7 +10,6 @@ label to the left of each saved-deck-button that says whether it is "in use" or 
 import tkinter as tk
 
 
-
 class ImportPage(tk.Frame):
     # pylint: disable=too-many-ancestors
 
@@ -49,7 +48,6 @@ class ImportPage(tk.Frame):
         self.entry_input = self.dialogue.get() + '\n'
         print(self.entry_input)
 
-
         self.new_deck = []
         start = 0
         end = 0
@@ -58,14 +56,14 @@ class ImportPage(tk.Frame):
                 end = i
                 self.new_deck.append(self.entry_input[start:end])
                 self.entry_input.replace(self.entry_input[i], 'x')
-                start = end+1
+                start = end + 1
 
-    def main():
+
+def main():
     """main"""
     root = tk.Tk()
     app = ImportPage(root)
     app.grid()
-
 
     app.mainloop()
 
